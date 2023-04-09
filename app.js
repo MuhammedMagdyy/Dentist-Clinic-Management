@@ -1,5 +1,7 @@
 const express = require('express');
 const sequelize = require('./util/database');
+
+/* Required Models */
 const Clinic = require('./models/clinic');
 const Dentist = require('./models/dentist');
 const Outpatient = require('./models/outpatient');
@@ -9,16 +11,12 @@ const Specialized = require('./models/specialized');
 const User = require('./models/user');
 const Admin = require('./models/admin');
 
+/* Required Routes */
+const adminRouter = require('./routes/admin');
+
 const app = express();
 
 app.use(express.json());
-
-// app.get('/', (req, res, next) => {
-//   res.status(200).json({
-//     message: 'Hello from Graduation Project!',
-//     status: 200,
-//   });
-// });
 
 // Relations
 User.hasMany(Patient, {
@@ -40,9 +38,11 @@ User.hasMany(Specialized, {
   foreignKey: 'created_by',
 });
 
+app.use('/admin', adminRouter);
+
 sequelize
-  .sync({ force: true })
-  // .sync()
+  // .sync({ force: true })
+  .sync()
   .then(result => {
     app.listen(3000);
   })
