@@ -1,110 +1,208 @@
 const Clinic = require('../models/clinic');
+const Role = require('../models/role');
 
 // GET Logic
-exports.getAllClinics = (req, res, next) => {
-  Clinic.findAll()
-    .then(clinics => {
-      if (!clinics.length) {
-        return res.status(404).json({
-          message: `There're no clinics in database!`,
-          status: 404,
-        });
-      }
-      res.status(200).json({
-        message: 'Clinics fetched successfully!',
-        clinics: clinics,
-        status: 200,
+/* Clinics */
+exports.getAllClinics = async (req, res, next) => {
+  const clinics = await Clinic.findAll();
+  try {
+    if (!clinics.length) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
       });
-    })
-    .catch(err => {
-      console.log(err);
+    }
+    res.status(200).json({
+      message: 'success',
+      data: clinics,
+      status: 200,
     });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-exports.getClinic = (req, res, next) => {
+exports.getClinic = async (req, res, next) => {
   const clinicId = req.params.id;
-  Clinic.findByPk(clinicId)
-    .then(clinic => {
-      if (!clinic) {
-        return res.status(404).json({
-          message: 'Clinic not found!',
-          status: 404,
-        });
-      }
-      res.status(200).json({
-        message: 'Clinic fetched!',
-        clinic: clinic,
-        status: 200,
+  const clinic = await Clinic.findByPk(clinicId);
+  try {
+    if (!clinic) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
       });
-    })
-    .catch(err => {
-      console.log(err);
+    }
+    res.status(200).json({
+      message: 'success',
+      data: clinic,
+      status: 200,
     });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+/* Roles */
+exports.getAllRoles = async (req, res, next) => {
+  try {
+    const roles = await Role.findAll();
+    if (!roles.length) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    res.status(200).json({
+      message: 'success',
+      data: roles,
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.getRole = async (req, res, next) => {
+  const roleId = req.params.id;
+  const role = await Role.findByPk(roleId);
+  try {
+    if (!role) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    res.status(200).json({
+      message: 'success',
+      data: role,
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 // POST Logic
-exports.addClinic = (req, res, next) => {
+/* Clinics */
+exports.addClinic = async (req, res, next) => {
   if (!req.body.name) {
     return res.status(400).json({
-      message: 'Name can not be empty!',
+      message: 'error',
+      status: 400,
     });
   }
   const name = req.body.name;
-  Clinic.create({
+  const clinic = await Clinic.create({
     name: name,
-  })
-    .then(result => {
-      res.status(201).json({
-        message: 'Clinic created successfully!',
-        status: 201,
-      });
-    })
-    .catch(err => {
-      console.log(err);
+  });
+  try {
+    res.status(201).json({
+      message: 'success',
+      status: 201,
     });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+/* Roles */
+exports.addRole = async (req, res, next) => {
+  if (!req.body.name) {
+    return res.status(400).json({
+      message: 'error',
+      status: 400,
+    });
+  }
+  const name = req.body.name;
+  try {
+    const result = await Role.create({
+      name: name,
+    });
+    res.status(201).json({
+      message: 'success',
+      status: 201,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 // PUT Logic
-exports.editClinic = (req, res, next) => {
+/* Clinics */
+exports.editClinic = async (req, res, next) => {
   const clinicId = req.params.id;
   const name = req.body.name;
-  Clinic.findByPk(clinicId)
-    .then(clinic => {
-      clinic.name = name;
-      return clinic.save();
-    })
-    .then(result => {
-      res.status(200).json({
-        message: 'Clinic updated!',
-        clinic: result,
-        status: 200,
-      });
-    })
-    .catch(err => {
-      console.log(err);
+  const clinic = await Clinic.findByPk(clinicId);
+  try {
+    clinic.name = name;
+    res.status(200).json({
+      message: 'success',
+      data: clinic,
+      status: 200,
     });
+    await clinic.save();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+/* Roles */
+exports.editRole = async (req, res, next) => {
+  const roleId = req.params.id;
+  const name = req.body.name;
+  const role = await Role.findByPk(roleId);
+  try {
+    role.name = name;
+    res.status(200).json({
+      message: 'success',
+      data: role,
+      status: 200,
+    });
+    await role.save();
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 // DELETE Logic
-exports.deleteClinic = (req, res, next) => {
+/* Clinics */
+exports.deleteClinic = async (req, res, next) => {
   const clinicId = req.params.id;
-  Clinic.findByPk(clinicId)
-    .then(clinic => {
-      if (!clinic) {
-        return res.status(404).json({
-          message: 'Clinic not found!',
-          status: 404,
-        });
-      }
-      return clinic.destroy();
-    })
-    .then(result => {
-      res.status(200).json({
-        message: 'Clinic deleted!',
-        status: 200,
+  const clinic = await Clinic.findByPk(clinicId);
+  try {
+    if (!clinic) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
       });
-    })
-    .catch(err => {
-      console.log(err);
+    }
+    await clinic.destroy();
+    res.status(200).json({
+      message: 'success',
+      status: 200,
     });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+/* Roles */
+exports.deleteRole = async (req, res, next) => {
+  const roleId = req.params.id;
+  const role = await Role.findByPk(roleId);
+  try {
+    if (!role) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    await role.destroy();
+    res.status(200).json({
+      message: 'success',
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
