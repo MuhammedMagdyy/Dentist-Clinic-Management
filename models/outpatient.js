@@ -13,7 +13,6 @@ const Outpatient = sequelize.define('outpatient', {
   diagnosis: Sequelize.STRING,
   extra_oral: Sequelize.STRING,
   intra_oral: Sequelize.STRING,
-  transfered_to: Sequelize.STRING,
   upper_right: Sequelize.INTEGER,
   upper_left: Sequelize.INTEGER,
   down_right: Sequelize.INTEGER,
