@@ -10,6 +10,9 @@ router.get('/patient/:id', nurseController.getPatient);
 router.get('/all-outpatients', nurseController.getAllOutPatients);
 router.get('/outpatient/:id', nurseController.getOutPatient);
 
+router.get('/all-specialized', nurseController.getAllSpecialized);
+router.get('/specialized/:id', nurseController.getSpecialized);
+
 // POST
 router.post(
   '/add-patient',
@@ -37,7 +40,6 @@ router.post(
     body('diagnosis').trim().not().isEmpty(),
     body('extra_oral').trim().not().isEmpty(),
     body('intra_oral').trim().not().isEmpty(),
-    // body('transfered_to').trim().not().isEmpty(),
     body('upper_right').trim().not().isEmpty().isNumeric(),
     body('upper_left').trim().not().isEmpty().isNumeric(),
     body('down_right').trim().not().isEmpty().isNumeric(),
@@ -49,13 +51,35 @@ router.post(
   ],
   nurseController.addOutPatient
 );
+
+router.post(
+  '/add-specialized',
+  [
+    body('examination').trim().not().isEmpty(),
+    body('treatment').trim().not().isEmpty(),
+    body('created_by').trim().not().isEmpty(),
+    body('patientId').trim().not().isEmpty().isNumeric(),
+    body('dentistId').trim().not().isEmpty().isNumeric(),
+    body('clinicId').trim().not().isEmpty().isNumeric(),
+    body('diagnosis').trim().not().isEmpty(),
+    body('radiographic_exam').trim().not().isEmpty(),
+    body('treatment_plant').trim().not().isEmpty(),
+  ],
+  nurseController.addSpecialized
+);
+
 // PUT
 router.put('/patient/:id', nurseController.editPatient);
 
 router.put('/outpatient/:id', nurseController.editOutPatient);
 
+router.put('/specialized/:id', nurseController.editSpecialized);
+
 // DELETE
 router.delete('/patient/:id', nurseController.deletePatient);
 
 router.delete('/outpatient/:id', nurseController.deleteOutPatient);
+
+router.delete('/specialized/:id', nurseController.deleteSpecialized);
+
 module.exports = router;

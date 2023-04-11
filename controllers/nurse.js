@@ -1,5 +1,6 @@
 const Patient = require('../models/patient');
 const Outpatient = require('../models/outpatient');
+const Specialized = require('../models/specialized');
 
 // GET Logic
 /* Patients */
@@ -82,6 +83,46 @@ exports.getOutPatient = async (req, res, next) => {
   }
 };
 
+/* Specialized */
+exports.getAllSpecialized = async (req, res, next) => {
+  try {
+    const specialized = await Specialized.findAll();
+    if (!specialized.length) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    res.status(200).json({
+      message: 'success',
+      data: specialized,
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.getSpecialized = async (req, res, next) => {
+  const specializedId = req.params.id;
+  try {
+    const specialized = await Specialized.findByPk(specializedId);
+    if (!specialized) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    res.status(200).json({
+      message: 'success',
+      data: specialized,
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // POST Logic
 /* Patients */
 exports.addPatient = async (req, res, next) => {
@@ -151,6 +192,38 @@ exports.addOutPatient = async (req, res, next) => {
       patientId: patientId,
       dentistId: dentistId,
       transferedId: transferedId,
+    });
+    res.status(201).json({
+      message: 'success',
+      status: 201,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+/* Specialized */
+exports.addSpecialized = async (req, res, next) => {
+  const examination = req.body.examination;
+  const diagnosis = req.body.diagnosis;
+  const treatment = req.body.treatment;
+  const created_by = req.body.created_by;
+  const patientId = req.body.patientId;
+  const dentistId = req.body.dentistId;
+  const clinicId = req.body.clinicId;
+  const treatment_plant = req.body.treatment_plant;
+  const radiographic_exam = req.body.radiographic_exam;
+  try {
+    const specialized = await Specialized.create({
+      examination: examination,
+      diagnosis: diagnosis,
+      treatment: treatment,
+      created_by: created_by,
+      patientId: patientId,
+      dentistId: dentistId,
+      clinicId: clinicId,
+      treatment_plant: treatment_plant,
+      radiographic_exam: radiographic_exam,
     });
     res.status(201).json({
       message: 'success',
@@ -252,6 +325,45 @@ exports.editOutPatient = async (req, res, next) => {
   }
 };
 
+/* Specialized */
+exports.editSpecialized = async (req, res, next) => {
+  const specializedId = req.params.id;
+  const examination = req.body.examination;
+  const diagnosis = req.body.diagnosis;
+  const treatment = req.body.treatment;
+  const created_by = req.body.created_by;
+  const patientId = req.body.patientId;
+  const dentistId = req.body.dentistId;
+  const clinicId = req.body.clinicId;
+  const treatment_plant = req.body.treatment_plant;
+  const radiographic_exam = req.body.radiographic_exam;
+  try {
+    const specialized = await Specialized.findByPk(specializedId);
+    if (!specialized) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    specialized.examination = examination;
+    specialized.diagnosis = diagnosis;
+    specialized.treatment = treatment;
+    specialized.created_by = created_by;
+    specialized.patientId = patientId;
+    specialized.dentistId = dentistId;
+    specialized.clinicId = clinicId;
+    specialized.treatment_plant = treatment_plant;
+    specialized.radiographic_exam = radiographic_exam;
+    await specialized.save();
+    res.status(200).json({
+      message: 'success',
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // DELETE Logic
 /* Patients */
 exports.deletePatient = async (req, res, next) => {
@@ -286,6 +398,27 @@ exports.deleteOutPatient = async (req, res, next) => {
       });
     }
     await outpatient.destroy();
+    res.status(200).json({
+      message: 'success',
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+/* Specialized */
+exports.deleteSpecialized = async (req, res, next) => {
+  const specializedId = req.params.id;
+  try {
+    const specialized = await Specialized.findByPk(specializedId);
+    if (!specialized) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    await specialized.destroy();
     res.status(200).json({
       message: 'success',
       status: 200,
