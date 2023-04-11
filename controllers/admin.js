@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const Clinic = require('../models/clinic');
 const Role = require('../models/role');
 const Users = require('../models/user');
+const Dentist = require('../models/dentist');
 
 // GET Logic
 /* Clinics */
@@ -125,6 +126,46 @@ exports.getUser = async (req, res, next) => {
   }
 };
 
+/* Dentists */
+exports.getAllDentists = async (req, res, next) => {
+  try {
+    const dentists = await Dentist.findAll();
+    if (!dentists.length) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    res.status(200).json({
+      message: 'success',
+      data: dentists,
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.getDentist = async (req, res, next) => {
+  const dentistId = req.params.id;
+  try {
+    const dentist = await Dentist.findByPk(dentistId);
+    if (!dentist) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    res.status(200).json({
+      message: 'success',
+      data: dentist,
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // POST Logic
 /* Clinics */
 exports.addClinic = async (req, res, next) => {
@@ -183,6 +224,30 @@ exports.addUser = async (req, res, next) => {
       email: email,
       password: hashedPawwrod,
       roleId: roleId,
+    });
+    res.status(201).json({
+      message: 'success',
+      status: 201,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+/* Dentists */
+exports.addDentist = async (req, res, next) => {
+  const name = req.body.name;
+  const email = req.body.email;
+  const phone = req.body.phone;
+  const national_id = req.body.national_id;
+  const works_in = req.body.works_in;
+  try {
+    const dentist = await Dentist.create({
+      name: name,
+      email: email,
+      phone: phone,
+      national_id: national_id,
+      works_in: works_in,
     });
     res.status(201).json({
       message: 'success',
@@ -255,6 +320,32 @@ exports.editUser = async (req, res, next) => {
   }
 };
 
+/* Dentists */
+exports.editDentist = async (req, res, next) => {
+  const dentistId = req.params.id;
+  const name = req.body.name;
+  const email = req.body.email;
+  const phone = req.body.phone;
+  const national_id = req.body.national_id;
+  const works_in = req.body.works_in;
+  try {
+    const dentist = await Dentist.findByPk(dentistId);
+    dentist.name = name;
+    dentist.email = email;
+    dentist.phone = phone;
+    dentist.national_id = national_id;
+    dentist.works_in = works_in;
+    res.status(200).json({
+      message: 'success',
+      data: dentist,
+      status: 200,
+    });
+    await dentist.save();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // DELETE Logic
 /* Clinics */
 exports.deleteClinic = async (req, res, next) => {
@@ -310,6 +401,27 @@ exports.deleteUser = async (req, res, next) => {
       });
     }
     await user.destroy();
+    res.status(200).json({
+      message: 'success',
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+/* Dentists */
+exports.deleteDentist = async (req, res, next) => {
+  const dentistId = req.params.id;
+  try {
+    const dentist = await Dentist.findByPk(dentistId);
+    if (!dentist) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    await dentist.destroy();
     res.status(200).json({
       message: 'success',
       status: 200,
