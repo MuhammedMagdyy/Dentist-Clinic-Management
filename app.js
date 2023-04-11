@@ -13,6 +13,7 @@ const Admin = require('./models/admin');
 
 /* Required Routes */
 const adminRouter = require('./routes/admin');
+const nurseRouter = require('./routes/nurse');
 
 const app = express();
 
@@ -39,6 +40,7 @@ User.hasMany(Specialized, {
 });
 
 app.use('/admin', adminRouter);
+app.use(nurseRouter);
 
 sequelize
   // .sync({ force: true })

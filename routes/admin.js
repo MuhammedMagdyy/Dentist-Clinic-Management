@@ -53,7 +53,7 @@ router.post(
 );
 
 // PUT [/admin/]
-router.put('/clinic/:id', [body('name').trim()], adminController.editClinic);
+router.put('/clinic/:id', adminController.editClinic);
 
 router.put('/role/:id', adminController.editRole);
 
