@@ -2,16 +2,17 @@ const express = require('express');
 const router = express.Router();
 const nurseController = require('../controllers/nurse');
 const { body } = require('express-validator');
+const isAuth = require('../middlewares/is-auth');
 
 // GET
-router.get('/all-patients', nurseController.getAllPatients);
-router.get('/patient/:id', nurseController.getPatient);
+router.get('/all-patients', isAuth, nurseController.getAllPatients);
+router.get('/patient/:id', isAuth, nurseController.getPatient);
 
-router.get('/all-outpatients', nurseController.getAllOutPatients);
-router.get('/outpatient/:id', nurseController.getOutPatient);
+router.get('/all-outpatients', isAuth, nurseController.getAllOutPatients);
+router.get('/outpatient/:id', isAuth, nurseController.getOutPatient);
 
-router.get('/all-specialized', nurseController.getAllSpecialized);
-router.get('/specialized/:id', nurseController.getSpecialized);
+router.get('/all-specialized', isAuth, nurseController.getAllSpecialized);
+router.get('/specialized/:id', isAuth, nurseController.getSpecialized);
 
 // POST
 router.post(
@@ -29,6 +30,7 @@ router.post(
     body('occupation').trim().not().isEmpty(),
     body('created_by').trim().not().isEmpty(),
   ],
+  isAuth,
   nurseController.addPatient
 );
 
@@ -49,6 +51,7 @@ router.post(
     body('dentistId').trim().not().isEmpty().isNumeric(),
     body('transferedId').trim().not().isEmpty().isNumeric(),
   ],
+  isAuth,
   nurseController.addOutPatient
 );
 
@@ -65,21 +68,22 @@ router.post(
     body('radiographic_exam').trim().not().isEmpty(),
     body('treatment_plant').trim().not().isEmpty(),
   ],
+  isAuth,
   nurseController.addSpecialized
 );
 
 // PUT
-router.put('/patient/:id', nurseController.editPatient);
+router.put('/patient/:id', isAuth, nurseController.editPatient);
 
-router.put('/outpatient/:id', nurseController.editOutPatient);
+router.put('/outpatient/:id', isAuth, nurseController.editOutPatient);
 
-router.put('/specialized/:id', nurseController.editSpecialized);
+router.put('/specialized/:id', isAuth, nurseController.editSpecialized);
 
 // DELETE
-router.delete('/patient/:id', nurseController.deletePatient);
+router.delete('/patient/:id', isAuth, nurseController.deletePatient);
 
-router.delete('/outpatient/:id', nurseController.deleteOutPatient);
+router.delete('/outpatient/:id', isAuth, nurseController.deleteOutPatient);
 
-router.delete('/specialized/:id', nurseController.deleteSpecialized);
+router.delete('/specialized/:id', isAuth, nurseController.deleteSpecialized);
 
 module.exports = router;

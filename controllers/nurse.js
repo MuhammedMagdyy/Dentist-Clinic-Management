@@ -136,7 +136,7 @@ exports.addPatient = async (req, res, next) => {
   const nationality = req.body.nationality;
   const marital_status = req.body.marital_status;
   const occupation = req.body.occupation;
-  const created_by = req.body.created_by;
+  // const created_by = req.body.created_by;
   try {
     const patient = await Patient.create({
       name: name,
@@ -149,7 +149,7 @@ exports.addPatient = async (req, res, next) => {
       nationality: nationality,
       marital_status: marital_status,
       occupation: occupation,
-      created_by: created_by,
+      created_by: req.userId,
     });
     res.status(201).json({
       message: 'success',
@@ -172,7 +172,7 @@ exports.addOutPatient = async (req, res, next) => {
   const upper_left = req.body.upper_left;
   const down_right = req.body.down_right;
   const down_left = req.body.down_left;
-  const created_by = req.body.created_by;
+  // const created_by = req.body.created_by;
   const patientId = req.body.patientId;
   const dentistId = req.body.dentistId;
   const transferedId = req.body.transferedId;
@@ -188,7 +188,7 @@ exports.addOutPatient = async (req, res, next) => {
       upper_left: upper_left,
       down_right: down_right,
       down_left: down_left,
-      created_by: created_by,
+      created_by: req.userId,
       patientId: patientId,
       dentistId: dentistId,
       transferedId: transferedId,
@@ -207,7 +207,7 @@ exports.addSpecialized = async (req, res, next) => {
   const examination = req.body.examination;
   const diagnosis = req.body.diagnosis;
   const treatment = req.body.treatment;
-  const created_by = req.body.created_by;
+  // const created_by = req.body.created_by;
   const patientId = req.body.patientId;
   const dentistId = req.body.dentistId;
   const clinicId = req.body.clinicId;
@@ -218,7 +218,7 @@ exports.addSpecialized = async (req, res, next) => {
       examination: examination,
       diagnosis: diagnosis,
       treatment: treatment,
-      created_by: created_by,
+      created_by: req.userId,
       patientId: patientId,
       dentistId: dentistId,
       clinicId: clinicId,
