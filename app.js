@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const sequelize = require('./util/database');
 const bodyParser = require('body-parser');
@@ -15,6 +17,7 @@ const User = require('./models/user');
 const adminRouter = require('./routes/admin');
 const nurseRouter = require('./routes/nurse');
 const authRouter = require('./routes/auth');
+const { config } = require('dotenv');
 
 const app = express();
 
@@ -41,7 +44,7 @@ User.hasMany(Specialized, {
   foreignKey: 'created_by',
 });
 
-// CORS Headers Middleware (Allowing all origins) - For Development Only (Remove in Production) 
+// CORS Headers Middleware (Allowing all origins) - For Development Only (Remove in Production)
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
@@ -60,7 +63,7 @@ sequelize
   // .sync({ force: true })
   .sync()
   .then(result => {
-    app.listen(3000);
+    app.listen(process.env.PORT || 3000);
   })
   .catch(err => {
     console.log(err);
