@@ -52,7 +52,6 @@ exports.login = async (req, res, next) => {
       status: 200,
       token: token,
       userId: user.id,
-      roleId: user.roleId,
     });
   } catch (err) {
     console.log(err);
