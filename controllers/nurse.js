@@ -1,6 +1,10 @@
 const Patient = require('../models/patient');
 const Outpatient = require('../models/outpatient');
 const Specialized = require('../models/specialized');
+const Dentist = require('../models/dentist');
+const User = require('../models/user');
+const Role = require('../models/role');
+const Clinic = require('../models/clinic');
 
 // GET Logic
 /* Patients */
@@ -116,6 +120,82 @@ exports.getSpecialized = async (req, res, next) => {
     res.status(200).json({
       message: 'success',
       data: specialized,
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+/* All Data */
+exports.getAllPatientData = async (req, res, next) => {
+  const patientId = req.params.id;
+  try {
+    const patientData = await Patient.findOne({
+      where: { id: patientId },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'created_by'],
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['name'],
+          include: [
+            {
+              model: Role,
+              attributes: ['name'],
+            },
+          ],
+        },
+        {
+          model: Outpatient,
+          attributes: {
+            exclude: [
+              'createdAt',
+              'updatedAt',
+              'created_by',
+              'patientId',
+              'dentistId',
+              'transferedId',
+            ],
+          },
+          include: [
+            {
+              model: Dentist,
+              attributes: ['name'],
+            },
+          ],
+        },
+        {
+          model: Specialized,
+          attributes: {
+            exclude: [
+              'createdAt',
+              'updatedAt',
+              'created_by',
+              'patientId',
+              'dentistId',
+              'clinicId',
+            ],
+          },
+          include: [
+            {
+              model: Dentist,
+              attributes: ['name'],
+            },
+            {
+              model: Clinic,
+              attributes: ['name'],
+            },
+          ],
+        },
+      ],
+    });
+    res.status(200).json({
+      message: 'success',
+      data: {
+        patient: patientData,
+      },
       status: 200,
     });
   } catch (err) {

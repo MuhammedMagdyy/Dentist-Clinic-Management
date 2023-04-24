@@ -14,6 +14,8 @@ router.get('/outpatient/:id', isAuth, nurseController.getOutPatient);
 router.get('/all-specialized', isAuth, nurseController.getAllSpecialized);
 router.get('/specialized/:id', isAuth, nurseController.getSpecialized);
 
+router.get('/patient-data/:id', isAuth, nurseController.getAllPatientData);
+
 // POST
 router.post(
   '/add-patient',

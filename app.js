@@ -28,19 +28,46 @@ app.use(bodyParser.json());
 User.hasMany(Patient, {
   foreignKey: 'created_by',
 });
+Patient.belongsTo(User, {
+  foreignKey: 'created_by',
+});
+
 Role.hasOne(User);
+User.belongsTo(Role);
+
 Patient.hasOne(Outpatient);
+Outpatient.belongsTo(Patient);
+
 User.hasMany(Outpatient, {
   foreignKey: 'created_by',
 });
+Outpatient.belongsTo(User, {
+  foreignKey: 'created_by',
+});
+
 Dentist.hasMany(Outpatient);
+Outpatient.belongsTo(Dentist);
+
 Clinic.hasMany(Outpatient, {
   foreignKey: 'transferedId',
 });
+Outpatient.belongsTo(Clinic, {
+  foreignKey: 'transferedId',
+});
+
 Dentist.hasMany(Specialized);
+Specialized.belongsTo(Dentist);
+
 Patient.hasMany(Specialized);
+Specialized.belongsTo(Patient);
+
 Clinic.hasMany(Specialized);
+Specialized.belongsTo(Clinic);
+
 User.hasMany(Specialized, {
+  foreignKey: 'created_by',
+});
+Specialized.belongsTo(User, {
   foreignKey: 'created_by',
 });
 
