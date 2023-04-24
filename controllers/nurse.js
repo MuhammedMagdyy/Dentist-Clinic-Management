@@ -132,7 +132,7 @@ exports.getAllPatientData = async (req, res, next) => {
   const patientId = req.params.id;
   try {
     const patientData = await Patient.findOne({
-      where: { id: patientId },
+      where: { national_id: patientId },
       attributes: {
         exclude: ['createdAt', 'updatedAt', 'created_by'],
       },
@@ -191,6 +191,12 @@ exports.getAllPatientData = async (req, res, next) => {
         },
       ],
     });
+    if (!patientData) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
     res.status(200).json({
       message: 'success',
       data: {
