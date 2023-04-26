@@ -10,7 +10,23 @@ const Clinic = require('../models/clinic');
 /* Patients */
 exports.getAllPatients = async (req, res, next) => {
   try {
-    const patients = await Patient.findAll();
+    const patients = await Patient.findAll({
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'created_by'],
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['name'],
+          include: [
+            {
+              model: Role,
+              attributes: ['name'],
+            },
+          ],
+        },
+      ],
+    });
     if (!patients.length) {
       return res.status(404).json({
         message: 'error',
@@ -30,7 +46,68 @@ exports.getAllPatients = async (req, res, next) => {
 exports.getPatient = async (req, res, next) => {
   const patientId = req.params.id;
   try {
-    const patient = await Patient.findByPk(patientId);
+    const patient = await Patient.findOne({
+      where: {
+        national_id: patientId,
+      },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'created_by'],
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['name'],
+          include: [
+            {
+              model: Role,
+              attributes: ['name'],
+            },
+          ],
+        },
+        {
+          model: Outpatient,
+          attributes: {
+            exclude: [
+              'createdAt',
+              'updatedAt',
+              'created_by',
+              'patientId',
+              'dentistId',
+              'transferedId',
+            ],
+          },
+          include: [
+            {
+              model: Dentist,
+              attributes: ['name'],
+            },
+          ],
+        },
+        {
+          model: Specialized,
+          attributes: {
+            exclude: [
+              'createdAt',
+              'updatedAt',
+              'created_by',
+              'patientId',
+              'dentistId',
+              'clinicId',
+            ],
+          },
+          include: [
+            {
+              model: Dentist,
+              attributes: ['name'],
+            },
+            {
+              model: Clinic,
+              attributes: ['name'],
+            },
+          ],
+        },
+      ],
+    });
     if (!patient) {
       return res.status(404).json({
         message: 'error',
@@ -50,7 +127,34 @@ exports.getPatient = async (req, res, next) => {
 /* Outpatients */
 exports.getAllOutPatients = async (req, res, next) => {
   try {
-    const outpatients = await Outpatient.findAll();
+    const outpatients = await Outpatient.findAll({
+      attributes: {
+        exclude: [
+          'createdAt',
+          'updatedAt',
+          'created_by',
+          'patientId',
+          'dentistId',
+          'transferedId',
+        ],
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['name'],
+          include: [
+            {
+              model: Role,
+              attributes: ['name'],
+            },
+          ],
+        },
+        {
+          model: Dentist,
+          attributes: ['name'],
+        },
+      ],
+    });
     if (!outpatients.length) {
       return res.status(404).json({
         message: 'error',
@@ -70,7 +174,44 @@ exports.getAllOutPatients = async (req, res, next) => {
 exports.getOutPatient = async (req, res, next) => {
   const outpatientId = req.params.id;
   try {
-    const outpatient = await Outpatient.findByPk(outpatientId);
+    const outpatient = await Outpatient.findByPk(outpatientId, {
+      attributes: {
+        exclude: [
+          'createdAt',
+          'updatedAt',
+          'created_by',
+          'patientId',
+          'dentistId',
+          'transferedId',
+        ],
+      },
+      include: [
+        {
+          model: Patient,
+          attributes: {
+            exclude: ['createdAt', 'updatedAt', 'created_by'],
+          },
+        },
+        {
+          model: Dentist,
+          attributes: ['name'],
+        },
+        {
+          model: Clinic,
+          attributes: ['name'],
+        },
+        {
+          model: User,
+          attributes: ['name'],
+          include: [
+            {
+              model: Role,
+              attributes: ['name'],
+            },
+          ],
+        },
+      ],
+    });
     if (!outpatient) {
       return res.status(404).json({
         message: 'error',
@@ -90,7 +231,44 @@ exports.getOutPatient = async (req, res, next) => {
 /* Specialized */
 exports.getAllSpecialized = async (req, res, next) => {
   try {
-    const specialized = await Specialized.findAll();
+    const specialized = await Specialized.findAll({
+      attributes: {
+        exclude: [
+          'createdAt',
+          'updatedAt',
+          'created_by',
+          'patientId',
+          'dentistId',
+          'clinicId',
+        ],
+      },
+      include: [
+        {
+          model: Patient,
+          attributes: {
+            exclude: ['createdAt', 'updatedAt', 'created_by'],
+          },
+        },
+        {
+          model: Dentist,
+          attributes: ['name'],
+        },
+        {
+          model: Clinic,
+          attributes: ['name'],
+        },
+        {
+          model: User,
+          attributes: ['name'],
+          include: [
+            {
+              model: Role,
+              attributes: ['name'],
+            },
+          ],
+        },
+      ],
+    });
     if (!specialized.length) {
       return res.status(404).json({
         message: 'error',
@@ -110,7 +288,44 @@ exports.getAllSpecialized = async (req, res, next) => {
 exports.getSpecialized = async (req, res, next) => {
   const specializedId = req.params.id;
   try {
-    const specialized = await Specialized.findByPk(specializedId);
+    const specialized = await Specialized.findByPk(specializedId, {
+      attributes: {
+        exclude: [
+          'createdAt',
+          'updatedAt',
+          'created_by',
+          'patientId',
+          'dentistId',
+          'clinicId',
+        ],
+      },
+      include: [
+        {
+          model: Patient,
+          attributes: {
+            exclude: ['createdAt', 'updatedAt', 'created_by'],
+          },
+        },
+        {
+          model: Dentist,
+          attributes: ['name'],
+        },
+        {
+          model: Clinic,
+          attributes: ['name'],
+        },
+        {
+          model: User,
+          attributes: ['name'],
+          include: [
+            {
+              model: Role,
+              attributes: ['name'],
+            },
+          ],
+        },
+      ],
+    });
     if (!specialized) {
       return res.status(404).json({
         message: 'error',
