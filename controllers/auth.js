@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const sendGridTransport = require('nodemailer-sendgrid-transport');
 const { Op } = require('sequelize');
+const resetPasswordPage = require('../views/html-reset-password');
 
 const transporter = nodemailer.createTransport(
   sendGridTransport({
@@ -92,11 +93,8 @@ exports.forgetPassword = (req, res, next) => {
         transporter.sendMail({
           to: req.body.email,
           from: process.env.SENDGRID_EMAIL,
-          subject: 'Password Reset',
-          html: `
-            <p>You requested a password reset</p>
-            <p>Click this <a href="http://localhost:3000/auth/reset/${token}">link</a> to set a new password.</p>
-          `,
+          subject: 'Reset Password',
+          html: resetPasswordPage.getEmail(token),
         });
       })
       .catch(err => {
@@ -140,6 +138,7 @@ exports.resetPassword = (req, res, next) => {
 };
 
 exports.changePassword = (req, res, next) => {
+  const currentPassword = req.body.currentPassword;
   const newPassword = req.body.password;
   const userId = req.userId;
   User.findOne({
@@ -148,6 +147,13 @@ exports.changePassword = (req, res, next) => {
     },
   })
     .then(async user => {
+      const isEqual = await bcrypt.compare(currentPassword, user.password);
+      if (!isEqual) {
+        return res.status(401).json({
+          message: 'error',
+          status: 401,
+        });
+      }
       let hashedPassword = await bcrypt.hash(newPassword, 12);
       user.password = hashedPassword;
       user.resetToken = null;
