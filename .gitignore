@@ -103,8 +103,5 @@ dist
 # TernJS port file
 .tern-port
 
-# Database
-util/database.js
-
 # For Graduation Project
 api-planing.txt
