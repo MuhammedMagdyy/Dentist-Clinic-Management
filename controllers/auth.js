@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const sendGridTransport = require('nodemailer-sendgrid-transport');
+const { Op } = require('sequelize');
 
 const transporter = nodemailer.createTransport(
   sendGridTransport({
@@ -58,7 +59,7 @@ exports.login = async (req, res, next) => {
   }
 };
 
-exports.resetPassword = (req, res, next) => {
+exports.forgetPassword = (req, res, next) => {
   crypto.randomBytes(32, (err, buffer) => {
     if (err) {
       return res.status(404).json({
@@ -94,7 +95,7 @@ exports.resetPassword = (req, res, next) => {
           subject: 'Password Reset',
           html: `
             <p>You requested a password reset</p>
-            <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password.</p>
+            <p>Click this <a href="http://localhost:3000/auth/reset/${token}">link</a> to set a new password.</p>
           `,
         });
       })
@@ -104,8 +105,9 @@ exports.resetPassword = (req, res, next) => {
   });
 };
 
-exports.getNewPassword = (req, res, next) => {
+exports.resetPassword = (req, res, next) => {
   const token = req.params.token;
+  const password = req.body.password;
   User.findOne({
     where: {
       resetToken: token,
@@ -114,17 +116,22 @@ exports.getNewPassword = (req, res, next) => {
       },
     },
   })
-    .then(user => {
+    .then(async user => {
+      console.log(user);
       if (!user) {
         return res.status(404).json({
           message: 'error',
           status: 404,
         });
       }
-      res.status(200).json({
+      let hashedPassword = await bcrypt.hash(password, 12);
+      user.password = hashedPassword;
+      user.resetToken = null;
+      user.resetTokenExpiration = null;
+      user.save();
+      return res.status(200).json({
         message: 'success',
         status: 200,
-        userId: user.id,
       });
     })
     .catch(err => {
@@ -132,27 +139,21 @@ exports.getNewPassword = (req, res, next) => {
     });
 };
 
-exports.newPassword = (req, res, next) => {
+exports.changePassword = (req, res, next) => {
   const newPassword = req.body.password;
-  const userId = req.body.userId;
-  let resetUser;
+  const userId = req.userId;
   User.findOne({
     where: {
       id: userId,
     },
   })
-    .then(user => {
-      resetUser = user;
-      return bcrypt.hash(newPassword, 12);
-    })
-    .then(hashedPassword => {
-      resetUser.password = hashedPassword;
-      resetUser.resetToken = null;
-      resetUser.resetTokenExpiration = null;
-      return resetUser.save();
-    })
-    .then(result => {
-      res.status(200).json({
+    .then(async user => {
+      let hashedPassword = await bcrypt.hash(newPassword, 12);
+      user.password = hashedPassword;
+      user.resetToken = null;
+      user.resetTokenExpiration = null;
+      user.save();
+      return res.status(200).json({
         message: 'success',
         status: 200,
       });

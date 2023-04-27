@@ -11,9 +11,9 @@ module.exports = async (req, res, next) => {
   if (user.roleId === admin.id) {
     next();
   } else {
-    return res.status(405).json({
+    return res.status(403).json({
       message: 'error',
-      status: 405,
+      status: 403,
     });
   }
 };

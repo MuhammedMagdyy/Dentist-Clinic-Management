@@ -17,7 +17,6 @@ const User = require('./models/user');
 const adminRouter = require('./routes/admin');
 const nurseRouter = require('./routes/nurse');
 const authRouter = require('./routes/auth');
-const { config } = require('dotenv');
 
 const app = express();
 
@@ -85,6 +84,17 @@ app.use((req, res, next) => {
 app.use('/auth', authRouter);
 app.use('/admin', adminRouter);
 app.use(nurseRouter);
+
+// Error Handling Middleware
+app.use((error, req, res, next) => {
+  console.log(error);
+  const status = error.statusCode || 500;
+  const { message, data } = error;
+  res.status(status).json({
+    message,
+    data,
+  });
+});
 
 sequelize
   // .sync({ force: true })
