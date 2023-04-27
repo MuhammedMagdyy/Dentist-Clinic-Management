@@ -96,11 +96,15 @@ app.use((error, req, res, next) => {
   });
 });
 
+app.listen(process.env.PORT || 3000, () => {
+  console.log('Server is running');
+});
+
 sequelize
   // .sync({ force: true })
   .sync()
   .then(result => {
-    app.listen(process.env.PORT || 3000);
+    console.log('Database connected');
   })
   .catch(err => {
     console.log(err);
