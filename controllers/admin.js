@@ -138,6 +138,12 @@ exports.getAllUsers = async (req, res, next) => {
           'updatedAt',
         ],
       },
+      include: [
+        {
+          model: Role,
+          attributes: ['id', 'name'],
+        },
+      ],
     });
     if (!users.length) {
       return res.status(404).json({
@@ -293,6 +299,31 @@ exports.getDentist = async (req, res, next) => {
   }
 };
 
+exports.getDentistId = async (req, res, next) => {
+  const dentistId = req.params.id;
+  try {
+    const dentist = await Dentist.findOne({
+      where: {
+        national_id: dentistId,
+      },
+      attributes: ['id'],
+    });
+    if (!dentist) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    res.status(200).json({
+      message: 'success',
+      data: dentist,
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // POST Logic
 /* Clinics */
 exports.addClinic = async (req, res, next) => {
@@ -325,9 +356,10 @@ exports.addRole = async (req, res, next) => {
     });
   }
   const name = req.body.name;
+  const nameToLower = name.toLowerCase();
   try {
     const result = await Role.create({
-      name: name,
+      name: nameToLower,
     });
     res.status(201).json({
       message: 'success',
@@ -427,14 +459,11 @@ exports.editUser = async (req, res, next) => {
   const userId = req.params.id;
   const name = req.body.name;
   const email = req.body.email;
-  const password = req.body.password;
   const roleId = req.body.roleId;
   try {
     const user = await Users.findByPk(userId);
     user.name = name;
     user.email = email;
-    const hashedPassword = await bcrypt.hash(password, 12);
-    user.password = hashedPassword;
     user.roleId = roleId;
     res.status(200).json({
       message: 'success',

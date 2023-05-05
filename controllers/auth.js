@@ -1,3 +1,5 @@
+const Role = require('../models/role');
+
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
@@ -24,18 +26,24 @@ exports.login = async (req, res, next) => {
       where: {
         email: email,
       },
+      include: [
+        {
+          model: Role,
+          attributes: ['name'],
+        },
+      ],
     });
     if (!user) {
-      return res.status(404).json({
+      return res.status(403).json({
         message: 'error',
-        status: 404,
+        status: 403,
       });
     }
     const isEqual = await bcrypt.compare(password, user.password);
     if (!isEqual) {
-      return res.status(404).json({
+      return res.status(401).json({
         message: 'error',
-        status: 404,
+        status: 401,
       });
     }
     const token = jwt.sign(
@@ -43,6 +51,7 @@ exports.login = async (req, res, next) => {
         email: user.email,
         userId: user.id,
         roleId: user.roleId,
+        roleName: user.role.name,
       },
       process.env.JWT_KEY,
       {
@@ -54,6 +63,8 @@ exports.login = async (req, res, next) => {
       status: 200,
       token: token,
       userId: user.id,
+      roleId: user.roleId,
+      roleName: user.role.name,
     });
   } catch (err) {
     console.log(err);
@@ -76,9 +87,9 @@ exports.forgetPassword = (req, res, next) => {
     })
       .then(user => {
         if (!user) {
-          return res.status(404).json({
+          return res.status(403).json({
             message: 'error',
-            status: 404,
+            status: 403,
           });
         }
         user.resetToken = token;
@@ -88,13 +99,14 @@ exports.forgetPassword = (req, res, next) => {
       .then(result => {
         res.status(200).json({
           message: 'success',
+          token: token,
           status: 200,
         });
         transporter.sendMail({
           to: req.body.email,
           from: process.env.SENDGRID_EMAIL,
           subject: 'Reset Password',
-          html: resetPasswordPage.getEmail(token),
+          html: resetPasswordPage.getEmail(),
         });
       })
       .catch(err => {
@@ -117,9 +129,9 @@ exports.resetPassword = (req, res, next) => {
     .then(async user => {
       console.log(user);
       if (!user) {
-        return res.status(404).json({
+        return res.status(403).json({
           message: 'error',
-          status: 404,
+          status: 403,
         });
       }
       let hashedPassword = await bcrypt.hash(password, 12);

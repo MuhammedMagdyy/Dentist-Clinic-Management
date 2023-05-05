@@ -8,16 +8,46 @@ const Patient = sequelize.define('patient', {
     allowNull: false,
     primaryKey: true,
   },
-  name: Sequelize.STRING,
-  age: Sequelize.INTEGER,
-  phone: Sequelize.STRING,
-  gender: Sequelize.STRING,
-  address: Sequelize.STRING,
-  city: Sequelize.STRING,
-  national_id: Sequelize.STRING,
-  nationality: Sequelize.STRING,
-  marital_status: Sequelize.STRING,
-  occupation: Sequelize.STRING,
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  age: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  phone: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  gender: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  address: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  city: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  national_id: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  nationality: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  marital_status: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  occupation: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
 });
 
 module.exports = Patient;

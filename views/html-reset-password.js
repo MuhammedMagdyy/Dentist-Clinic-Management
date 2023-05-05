@@ -1,4 +1,4 @@
-exports.getEmail = token => {
+exports.getEmail = () => {
   return `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   <html
@@ -611,7 +611,7 @@ exports.getEmail = token => {
                                 >
                                   <div align="left">
                                     <a
-                                      href="http://localhost:3000/auth/reset/${token}"
+                                      href="http://127.0.0.1:5500/Auth/confirm-password.html"
                                       target="_blank"
                                       class="v-button"
                                       style="

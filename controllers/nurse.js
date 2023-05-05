@@ -124,6 +124,31 @@ exports.getPatient = async (req, res, next) => {
   }
 };
 
+exports.getPatientId = async (req, res, next) => {
+  const patientId = req.params.id;
+  try {
+    const patient = await Patient.findOne({
+      where: {
+        national_id: patientId,
+      },
+      attributes: ['id'],
+    });
+    if (!patient) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    res.status(200).json({
+      message: 'success',
+      data: patient,
+      status: 200,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 /* Outpatients */
 exports.getAllOutPatients = async (req, res, next) => {
   try {
@@ -468,7 +493,7 @@ exports.addOutPatient = async (req, res, next) => {
   const diagnosis = req.body.diagnosis;
   const extra_oral = req.body.extra_oral;
   const intra_oral = req.body.intra_oral;
-  const transfered_to = req.body.transfered_to;
+  // const transfered_to = req.body.transfered_to;
   const upper_right = req.body.upper_right;
   const upper_left = req.body.upper_left;
   const down_right = req.body.down_right;
@@ -484,11 +509,11 @@ exports.addOutPatient = async (req, res, next) => {
       diagnosis: diagnosis,
       extra_oral: extra_oral,
       intra_oral: intra_oral,
-      transfered_to: transfered_to,
-      upper_right: upper_right,
-      upper_left: upper_left,
-      down_right: down_right,
-      down_left: down_left,
+      // transfered_to: transfered_to,
+      upper_right: upper_right.toString(),
+      upper_left: upper_left.toString(),
+      down_right: down_right.toString(),
+      down_left: down_left.toString(),
       created_by: req.userId,
       patientId: patientId,
       dentistId: dentistId,

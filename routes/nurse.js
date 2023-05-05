@@ -3,10 +3,12 @@ const router = express.Router();
 const nurseController = require('../controllers/nurse');
 const { body } = require('express-validator');
 const isAuth = require('../middlewares/is-auth');
+const { validationMiddleWare } = require('../middlewares/is-validator');
 
 // GET
 router.get('/all-patients', isAuth, nurseController.getAllPatients);
 router.get('/patient/:id', isAuth, nurseController.getPatient);
+router.get('/patientId/:id', isAuth, nurseController.getPatientId);
 
 router.get('/all-outpatients', isAuth, nurseController.getAllOutPatients);
 router.get('/outpatient/:id', isAuth, nurseController.getOutPatient);
@@ -20,18 +22,19 @@ router.get('/patient-data/:id', isAuth, nurseController.getAllPatientData);
 router.post(
   '/add-patient',
   [
-    body('name').trim().not().isEmpty(),
-    body('age').trim().not().isEmpty().isNumeric(),
-    body('phone').trim().not().isEmpty().isNumeric(),
-    body('gender').trim().not().isEmpty(),
-    body('address').trim().not().isEmpty(),
-    body('city').trim().not().isEmpty(),
-    body('national_id').trim().not().isEmpty(),
-    body('nationality').trim().not().isEmpty(),
-    body('marital_status').trim().not().isEmpty(),
-    body('occupation').trim().not().isEmpty(),
-    body('created_by').trim().not().isEmpty(),
+    body('name').trim().notEmpty(),
+    body('age').trim().notEmpty().isNumeric(),
+    body('phone').trim().notEmpty().isNumeric(),
+    body('gender').trim().notEmpty(),
+    body('address').trim().notEmpty(),
+    body('city').trim().notEmpty(),
+    body('national_id').trim().notEmpty(),
+    body('nationality').trim().notEmpty(),
+    body('marital_status').trim().notEmpty(),
+    body('occupation').trim().notEmpty(),
+    body('created_by').trim().notEmpty(),
   ],
+  validationMiddleWare,
   isAuth,
   nurseController.addPatient
 );
@@ -39,20 +42,21 @@ router.post(
 router.post(
   '/add-outpatient',
   [
-    body('chief_complaint').trim().not().isEmpty(),
-    body('medical_history').trim().not().isEmpty(),
-    body('diagnosis').trim().not().isEmpty(),
-    body('extra_oral').trim().not().isEmpty(),
-    body('intra_oral').trim().not().isEmpty(),
-    body('upper_right').trim().not().isEmpty().isNumeric(),
-    body('upper_left').trim().not().isEmpty().isNumeric(),
-    body('down_right').trim().not().isEmpty().isNumeric(),
-    body('down_left').trim().not().isEmpty().isNumeric(),
-    body('patientId').trim().not().isEmpty().isNumeric(),
-    body('created_by').trim().not().isEmpty(),
-    body('dentistId').trim().not().isEmpty().isNumeric(),
-    body('transferedId').trim().not().isEmpty().isNumeric(),
+    body('chief_complaint').trim().notEmpty(),
+    body('medical_history').trim().notEmpty(),
+    body('diagnosis').trim().notEmpty(),
+    body('extra_oral').trim().notEmpty(),
+    body('intra_oral').trim().notEmpty(),
+    body('upper_right').trim().notEmpty().isNumeric(),
+    body('upper_left').trim().notEmpty().isNumeric(),
+    body('down_right').trim().notEmpty().isNumeric(),
+    body('down_left').trim().notEmpty().isNumeric(),
+    body('patientId').trim().notEmpty().isNumeric(),
+    body('created_by').trim().notEmpty(),
+    body('dentistId').trim().notEmpty().isNumeric(),
+    body('transferedId').trim().notEmpty().isNumeric(),
   ],
+  validationMiddleWare,
   isAuth,
   nurseController.addOutPatient
 );
@@ -60,16 +64,17 @@ router.post(
 router.post(
   '/add-specialized',
   [
-    body('examination').trim().not().isEmpty(),
-    body('treatment').trim().not().isEmpty(),
-    body('created_by').trim().not().isEmpty(),
-    body('patientId').trim().not().isEmpty().isNumeric(),
-    body('dentistId').trim().not().isEmpty().isNumeric(),
-    body('clinicId').trim().not().isEmpty().isNumeric(),
-    body('diagnosis').trim().not().isEmpty(),
-    body('radiographic_exam').trim().not().isEmpty(),
-    body('treatment_plant').trim().not().isEmpty(),
+    body('examination').trim().notEmpty(),
+    body('treatment').trim().notEmpty(),
+    body('created_by').trim().notEmpty(),
+    body('patientId').trim().notEmpty().isNumeric(),
+    body('dentistId').trim().notEmpty().isNumeric(),
+    body('clinicId').trim().notEmpty().isNumeric(),
+    body('diagnosis').trim().notEmpty(),
+    body('radiographic_exam').trim().notEmpty(),
+    body('treatment_plant').trim().notEmpty(),
   ],
+  validationMiddleWare,
   isAuth,
   nurseController.addSpecialized
 );

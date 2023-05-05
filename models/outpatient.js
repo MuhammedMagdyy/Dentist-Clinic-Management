@@ -8,15 +8,42 @@ const Outpatient = sequelize.define('outpatient', {
     allowNull: false,
     primaryKey: true,
   },
-  chief_complaint: Sequelize.STRING,
-  medical_history: Sequelize.STRING,
-  diagnosis: Sequelize.STRING,
-  extra_oral: Sequelize.STRING,
-  intra_oral: Sequelize.STRING,
-  upper_right: Sequelize.INTEGER,
-  upper_left: Sequelize.INTEGER,
-  down_right: Sequelize.INTEGER,
-  down_left: Sequelize.INTEGER,
+  chief_complaint: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  medical_history: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  diagnosis: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  extra_oral: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  intra_oral: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  upper_right: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  upper_left: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  down_right: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  down_left: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
 });
 
 module.exports = Outpatient;

@@ -25,5 +25,7 @@ module.exports = (req, res, next) => {
     });
   }
   req.userId = decodedToken.userId;
+  req.roleId = decodedToken.roleId;
+  req.roleName = decodedToken.roleName;
   next();
 };

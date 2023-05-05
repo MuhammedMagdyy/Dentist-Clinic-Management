@@ -16,9 +16,18 @@ const Dentist = sequelize.define('dentist', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  phone: Sequelize.STRING,
-  national_id: Sequelize.STRING,
-  works_in: Sequelize.STRING,
+  phone: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  national_id: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  works_in: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
 });
 
 module.exports = Dentist;

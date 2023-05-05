@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const sequelize = require('./util/database');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 /* Required Models */
 const Clinic = require('./models/clinic');
@@ -20,6 +21,7 @@ const authRouter = require('./routes/auth');
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -96,7 +98,7 @@ app.use((error, req, res, next) => {
   });
 });
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 8080, () => {
   console.log('Server is running');
 });
 

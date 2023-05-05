@@ -8,11 +8,26 @@ const Specialized = sequelize.define('specialized', {
     allowNull: false,
     primaryKey: true,
   },
-  examination: Sequelize.STRING,
-  diagnosis: Sequelize.STRING,
-  radiographic_exam: Sequelize.STRING,
-  treatment: Sequelize.STRING,
-  treatment_plant: Sequelize.STRING,
+  examination: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  diagnosis: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  radiographic_exam: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  treatment: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  treatment_plant: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
 });
 
 module.exports = Specialized;
