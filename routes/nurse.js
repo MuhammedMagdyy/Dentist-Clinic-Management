@@ -18,6 +18,13 @@ router.get('/specialized/:id', isAuth, nurseController.getSpecialized);
 
 router.get('/patient-data/:id', isAuth, nurseController.getAllPatientData);
 
+router.get('/appoitment/patient/:id', isAuth, nurseController.getAppointment);
+router.get(
+  '/appoitment/clinic/:id',
+  isAuth,
+  nurseController.getAppointmentClinic
+);
+
 // POST
 router.post(
   '/add-patient',
@@ -28,11 +35,10 @@ router.post(
     body('gender').trim().notEmpty(),
     body('address').trim().notEmpty(),
     body('city').trim().notEmpty(),
-    body('national_id').trim().notEmpty(),
+    body('national_id').trim().notEmpty().isNumeric().isLength({ min: 14 }),
     body('nationality').trim().notEmpty(),
     body('marital_status').trim().notEmpty(),
     body('occupation').trim().notEmpty(),
-    body('created_by').trim().notEmpty(),
   ],
   validationMiddleWare,
   isAuth,
@@ -52,7 +58,6 @@ router.post(
     body('down_right').trim().notEmpty().isNumeric(),
     body('down_left').trim().notEmpty().isNumeric(),
     body('patientId').trim().notEmpty().isNumeric(),
-    body('created_by').trim().notEmpty(),
     body('dentistId').trim().notEmpty().isNumeric(),
     body('transferedId').trim().notEmpty().isNumeric(),
   ],
@@ -66,7 +71,6 @@ router.post(
   [
     body('examination').trim().notEmpty(),
     body('treatment').trim().notEmpty(),
-    body('created_by').trim().notEmpty(),
     body('patientId').trim().notEmpty().isNumeric(),
     body('dentistId').trim().notEmpty().isNumeric(),
     body('clinicId').trim().notEmpty().isNumeric(),
@@ -79,12 +83,21 @@ router.post(
   nurseController.addSpecialized
 );
 
+router.post('/add-appointment', isAuth, nurseController.addAppointment);
+
 // PUT
 router.put('/patient/:id', isAuth, nurseController.editPatient);
 
 router.put('/outpatient/:id', isAuth, nurseController.editOutPatient);
 
 router.put('/specialized/:id', isAuth, nurseController.editSpecialized);
+
+router.put(
+  '/appointment/transferedTo/:id',
+  isAuth,
+  nurseController.editAppointment
+);
+router.put('/appointment/status/:id', isAuth, nurseController.editStatus);
 
 // DELETE
 router.delete('/patient/:id', isAuth, nurseController.deletePatient);

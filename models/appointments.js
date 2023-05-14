@@ -1,21 +1,22 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../util/database');
 
-const Clinic = sequelize.define('clinic', {
+const Appointment = sequelize.define('appointment', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
-  name: {
-    type: Sequelize.STRING,
+  status: {
+    type: Sequelize.INTEGER,
     allowNull: false,
+    defaultValue: 0,
     validate: {
+      isIn: [[0, 1, 2]],
       notEmpty: true,
-      isAlpha: true,
     },
   },
 });
 
-module.exports = Clinic;
+module.exports = Appointment;

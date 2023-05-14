@@ -5,6 +5,8 @@ const Dentist = require('../models/dentist');
 const User = require('../models/user');
 const Role = require('../models/role');
 const Clinic = require('../models/clinic');
+const Appointment = require('../models/appointments');
+const { Op } = require('sequelize');
 
 // GET Logic
 /* Patients */
@@ -34,12 +36,13 @@ exports.getAllPatients = async (req, res, next) => {
       });
     }
     res.status(200).json({
+      count: patients.length,
       message: 'success',
       data: patients,
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -120,7 +123,7 @@ exports.getPatient = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -145,7 +148,7 @@ exports.getPatientId = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -192,7 +195,7 @@ exports.getAllOutPatients = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -249,7 +252,7 @@ exports.getOutPatient = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -306,7 +309,7 @@ exports.getAllSpecialized = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -363,7 +366,7 @@ exports.getSpecialized = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -391,7 +394,6 @@ exports.getAllPatientData = async (req, res, next) => {
           model: Outpatient,
           attributes: {
             exclude: [
-              'createdAt',
               'updatedAt',
               'created_by',
               'patientId',
@@ -410,7 +412,6 @@ exports.getAllPatientData = async (req, res, next) => {
           model: Specialized,
           attributes: {
             exclude: [
-              'createdAt',
               'updatedAt',
               'created_by',
               'patientId',
@@ -445,7 +446,74 @@ exports.getAllPatientData = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
+  }
+};
+
+/* Appointment */
+exports.getAppointment = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const patient = await Patient.findOne({
+      where: { national_id: id },
+      attributes: ['id', 'name'],
+      include: [
+        {
+          model: Clinic,
+          attributes: ['id', 'name'],
+          through: {
+            attributes: ['id', 'status'],
+          },
+        },
+      ],
+    });
+    if (!Patient) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    res.status(200).json({
+      message: 'success',
+      data: patient,
+      status: 200,
+    });
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+exports.getAppointmentClinic = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const clinic = await Clinic.findByPk(id, {
+      where: {
+        status: 0,
+      },
+      attributes: ['id', 'name'],
+      include: [
+        {
+          model: Patient,
+          attributes: ['id', 'name'],
+          through: {
+            attributes: ['id', 'status', 'createdAt'],
+          },
+        },
+      ],
+    });
+    if (!clinic) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    res.status(200).json({
+      message: 'success',
+      data: clinic,
+      status: 200,
+    });
+  } catch (err) {
+    throw new Error(err);
   }
 };
 
@@ -462,7 +530,6 @@ exports.addPatient = async (req, res, next) => {
   const nationality = req.body.nationality;
   const marital_status = req.body.marital_status;
   const occupation = req.body.occupation;
-  // const created_by = req.body.created_by;
   try {
     const patient = await Patient.create({
       name: name,
@@ -482,7 +549,7 @@ exports.addPatient = async (req, res, next) => {
       status: 201,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -493,12 +560,10 @@ exports.addOutPatient = async (req, res, next) => {
   const diagnosis = req.body.diagnosis;
   const extra_oral = req.body.extra_oral;
   const intra_oral = req.body.intra_oral;
-  // const transfered_to = req.body.transfered_to;
   const upper_right = req.body.upper_right;
   const upper_left = req.body.upper_left;
   const down_right = req.body.down_right;
   const down_left = req.body.down_left;
-  // const created_by = req.body.created_by;
   const patientId = req.body.patientId;
   const dentistId = req.body.dentistId;
   const transferedId = req.body.transferedId;
@@ -509,22 +574,25 @@ exports.addOutPatient = async (req, res, next) => {
       diagnosis: diagnosis,
       extra_oral: extra_oral,
       intra_oral: intra_oral,
-      // transfered_to: transfered_to,
-      upper_right: upper_right.toString(),
-      upper_left: upper_left.toString(),
-      down_right: down_right.toString(),
-      down_left: down_left.toString(),
+      upper_right: upper_right,
+      upper_left: upper_left,
+      down_right: down_right,
+      down_left: down_left,
       created_by: req.userId,
       patientId: patientId,
       dentistId: dentistId,
       transferedId: transferedId,
+    });
+    const appointment = await Appointment.create({
+      patientId: patientId,
+      clinicId: transferedId,
     });
     res.status(201).json({
       message: 'success',
       status: 201,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -533,7 +601,6 @@ exports.addSpecialized = async (req, res, next) => {
   const examination = req.body.examination;
   const diagnosis = req.body.diagnosis;
   const treatment = req.body.treatment;
-  // const created_by = req.body.created_by;
   const patientId = req.body.patientId;
   const dentistId = req.body.dentistId;
   const clinicId = req.body.clinicId;
@@ -551,12 +618,58 @@ exports.addSpecialized = async (req, res, next) => {
       treatment_plant: treatment_plant,
       radiographic_exam: radiographic_exam,
     });
+    const appointment = await Appointment.findOne({
+      where: {
+        [Op.and]: [
+          { patientId: patientId },
+          { clinicId: clinicId },
+          { status: 0 },
+        ],
+      },
+    });
+    if (!appointment) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    if (req.body.isTransfered === false) {
+      appointment.status = 1;
+    } else {
+      await Appointment.create({
+        patientId: appointment.patientId,
+        clinicId: req.body.transferedTo,
+      });
+      appointment.status = 2;
+    }
+    await appointment.save();
     res.status(201).json({
       message: 'success',
       status: 201,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
+  }
+};
+
+/* Appointment */
+exports.addAppointment = async (req, res, next) => {
+  const status = req.body.status;
+  const patientId = req.body.patientId;
+  const clinicId = req.body.clinicId;
+
+  try {
+    const appointment = await Appointment.create({
+      status: status,
+      patientId: patientId,
+      clinicId: clinicId,
+    });
+    res.status(201).json({
+      message: 'success',
+      status: 201,
+    });
+  } catch (err) {
+    throw new Error(err);
   }
 };
 
@@ -574,7 +687,7 @@ exports.editPatient = async (req, res, next) => {
   const nationality = req.body.nationality;
   const marital_status = req.body.marital_status;
   const occupation = req.body.occupation;
-  const created_by = req.body.created_by;
+  const created_by = req.userId;
   try {
     const patient = await Patient.findByPk(patientId);
     if (!patient) {
@@ -600,7 +713,7 @@ exports.editPatient = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -616,7 +729,7 @@ exports.editOutPatient = async (req, res, next) => {
   const upper_left = req.body.upper_left;
   const down_right = req.body.down_right;
   const down_left = req.body.down_left;
-  const created_by = req.body.created_by;
+  const created_by = req.userId;
   const patientId = req.body.patientId;
   const dentistId = req.body.dentistId;
   const transferedId = req.body.transferedId;
@@ -647,7 +760,7 @@ exports.editOutPatient = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -657,7 +770,7 @@ exports.editSpecialized = async (req, res, next) => {
   const examination = req.body.examination;
   const diagnosis = req.body.diagnosis;
   const treatment = req.body.treatment;
-  const created_by = req.body.created_by;
+  const created_by = req.userId;
   const patientId = req.body.patientId;
   const dentistId = req.body.dentistId;
   const clinicId = req.body.clinicId;
@@ -686,7 +799,61 @@ exports.editSpecialized = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
+  }
+};
+
+exports.editAppointment = async (req, res, next) => {
+  /*
+    Status: [0: pending, 1: done, 2: transfered]
+  */
+  const id = req.params.id;
+  const transferedTo = req.body.transferedTo;
+
+  try {
+    const old_appointment = await Appointment.findByPk(id);
+    if (!old_appointment) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    const new_appointment = await Appointment.create({
+      patientId: old_appointment.patientId,
+      clinicId: transferedTo,
+    });
+    old_appointment.transferedTo = new_appointment.id;
+    old_appointment.status = 2;
+    await old_appointment.save();
+    await new_appointment.save();
+
+    res.status(200).json({
+      message: 'success',
+      status: 200,
+    });
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+exports.editStatus = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const appointment = await Appointment.findByPk(id);
+    if (!appointment) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    appointment.status = 1;
+    await appointment.save();
+    res.status(200).json({
+      message: 'success',
+      status: 200,
+    });
+  } catch (err) {
+    throw new Error(err);
   }
 };
 
@@ -708,7 +875,7 @@ exports.deletePatient = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -729,7 +896,7 @@ exports.deleteOutPatient = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -750,6 +917,6 @@ exports.deleteSpecialized = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };

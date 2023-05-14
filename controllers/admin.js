@@ -29,7 +29,7 @@ exports.getAllClinics = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -72,7 +72,7 @@ exports.getClinic = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -96,7 +96,7 @@ exports.getAllRoles = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -120,7 +120,7 @@ exports.getRole = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -157,7 +157,7 @@ exports.getAllUsers = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -200,7 +200,7 @@ exports.getUser = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -224,7 +224,7 @@ exports.getAllDentists = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -295,7 +295,7 @@ exports.getDentist = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -320,7 +320,32 @@ exports.getDentistId = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
+  }
+};
+
+exports.getClinicId = async (req, res, next) => {
+  const clinicId = req.params.id;
+  try {
+    const clinic = await Clinic.findOne({
+      where: {
+        id: clinicId,
+      },
+      attributes: ['id'],
+    });
+    if (!clinic) {
+      return res.status(404).json({
+        message: 'error',
+        status: 404,
+      });
+    }
+    res.status(200).json({
+      message: 'success',
+      data: clinic,
+      status: 200,
+    });
+  } catch (err) {
+    throw new Error(err);
   }
 };
 
@@ -343,7 +368,7 @@ exports.addClinic = async (req, res, next) => {
       status: 201,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -366,7 +391,7 @@ exports.addRole = async (req, res, next) => {
       status: 201,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -389,7 +414,7 @@ exports.addUser = async (req, res, next) => {
       status: 201,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -413,7 +438,7 @@ exports.addDentist = async (req, res, next) => {
       status: 201,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -432,7 +457,7 @@ exports.editClinic = async (req, res, next) => {
     });
     await clinic.save();
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -450,7 +475,7 @@ exports.editRole = async (req, res, next) => {
     });
     await role.save();
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -472,7 +497,7 @@ exports.editUser = async (req, res, next) => {
     });
     await user.save();
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -498,7 +523,7 @@ exports.editDentist = async (req, res, next) => {
     });
     await dentist.save();
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -520,7 +545,7 @@ exports.deleteClinic = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -541,7 +566,7 @@ exports.deleteRole = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -562,7 +587,7 @@ exports.deleteUser = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -583,6 +608,6 @@ exports.deleteDentist = async (req, res, next) => {
       status: 200,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };

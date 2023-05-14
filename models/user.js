@@ -11,14 +11,26 @@ const User = sequelize.define('user', {
   name: {
     type: Sequelize.STRING,
     allowNull: false,
+    validate: {
+      notEmpty: true,
+      isAlpha: true,
+    },
   },
   email: {
     type: Sequelize.STRING,
     allowNull: false,
+    validate: {
+      notEmpty: true,
+      isEmail: true,
+    },
   },
   password: {
     type: Sequelize.STRING,
     allowNull: false,
+    validate: {
+      notEmpty: true,
+      len: [5, 23],
+    },
   },
   resetToken: Sequelize.STRING,
   resetTokenExpiration: Sequelize.DATE,

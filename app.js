@@ -13,6 +13,7 @@ const Patient = require('./models/patient');
 const Role = require('./models/role');
 const Specialized = require('./models/specialized');
 const User = require('./models/user');
+const Appointment = require('./models/appointments');
 
 /* Required Routes */
 const adminRouter = require('./routes/admin');
@@ -72,6 +73,16 @@ Specialized.belongsTo(User, {
   foreignKey: 'created_by',
 });
 
+Patient.belongsToMany(Clinic, { through: Appointment });
+Clinic.belongsToMany(Patient, { through: Appointment });
+
+Appointment.hasOne(Appointment, {
+  foreignKey: {
+    name: 'transferedTo',
+    allowNull: true,
+  },
+});
+
 // CORS Headers Middleware (Allowing all origins) - For Development Only (Remove in Production)
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -109,5 +120,5 @@ sequelize
     console.log('Database connected');
   })
   .catch(err => {
-    console.log(err);
+    throw new Error(err);
   });

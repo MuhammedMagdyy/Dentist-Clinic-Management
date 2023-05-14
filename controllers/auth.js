@@ -67,7 +67,7 @@ exports.login = async (req, res, next) => {
       roleName: user.role.name,
     });
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
@@ -110,7 +110,7 @@ exports.forgetPassword = (req, res, next) => {
         });
       })
       .catch(err => {
-        console.log(err);
+        throw new Error(err);
       });
   });
 };
@@ -145,7 +145,7 @@ exports.resetPassword = (req, res, next) => {
       });
     })
     .catch(err => {
-      console.log(err);
+      throw new Error(err);
     });
 };
 
@@ -177,6 +177,6 @@ exports.changePassword = (req, res, next) => {
       });
     })
     .catch(err => {
-      console.log(err);
+      throw new Error(err);
     });
 };

@@ -17,26 +17,16 @@ router.get('/role/:id', isAuth, isAdmin, adminController.getRole);
 router.get('/all-users', isAuth, isAdmin, adminController.getAllUsers);
 router.get('/user/:id', isAuth, isAdmin, adminController.getUser);
 
-router.get(
-  '/all-dentists',
-  isAuth,
-  isNurse,
-  // isAdmin,
-  adminController.getAllDentists
-);
-router.get(
-  '/dentist/:id',
-  isAuth,
-  isNurse,
-  // isAdmin,
-  adminController.getDentist
-);
+router.get('/all-dentists', isAuth, isNurse, adminController.getAllDentists);
+router.get('/dentist/:id', isAuth, isNurse, adminController.getDentist);
 router.get('/dentistId/:id', isAuth, isNurse, adminController.getDentistId);
+
+router.get('/clinicId/:id', isAuth, isNurse, adminController.getClinicId);
 
 // POST [/admin/]
 router.post(
   '/add-clinic',
-  [body('name').trim().notEmpty()],
+  [body('name').trim().notEmpty().isAlpha()],
   validationMiddleWare,
   isAuth,
   isAdmin,
@@ -45,7 +35,7 @@ router.post(
 
 router.post(
   '/add-role',
-  [body('name').trim().notEmpty()],
+  [body('name').trim().notEmpty().isAlpha()],
   validationMiddleWare,
   isAuth,
   isAdmin,
@@ -55,7 +45,7 @@ router.post(
 router.post(
   '/add-user',
   [
-    body('name').trim().notEmpty(),
+    body('name').trim().notEmpty().isAlpha(),
     body('email').isEmail().normalizeEmail().trim().notEmpty(),
     body('password').trim().isLength({ min: 5 }).notEmpty(),
   ],
@@ -68,10 +58,10 @@ router.post(
 router.post(
   '/add-dentist',
   [
-    body('name').trim().notEmpty(),
+    body('name').trim().notEmpty().isAlpha(),
     body('email').isEmail().normalizeEmail().trim().notEmpty(),
-    body('national_id').trim().notEmpty(),
-    body('phone').trim().notEmpty(),
+    body('national_id').trim().notEmpty().isNumeric().isLength({ min: 14 }),
+    body('phone').trim().notEmpty().isNumeric(),
     body('works_in').trim().notEmpty(),
   ],
   validationMiddleWare,
