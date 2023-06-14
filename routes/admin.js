@@ -20,13 +20,16 @@ router.get('/user/:id', isAuth, isAdmin, adminController.getUser);
 router.get('/all-dentists', isAuth, isNurse, adminController.getAllDentists);
 router.get('/dentist/:id', isAuth, isNurse, adminController.getDentist);
 router.get('/dentistId/:id', isAuth, isNurse, adminController.getDentistId);
+router.get('/in-doctor', isAuth, isNurse, adminController.getInDoctor);
+router.get('/out-doctor', isAuth, isNurse, adminController.getOutDoctor);
 
 router.get('/clinicId/:id', isAuth, isNurse, adminController.getClinicId);
 
 // POST [/admin/]
 router.post(
   '/add-clinic',
-  [body('name').trim().notEmpty().isAlpha()],
+  // need it to have space in the name
+  [body('name').trim().notEmpty().isString()],
   validationMiddleWare,
   isAuth,
   isAdmin,
@@ -35,7 +38,7 @@ router.post(
 
 router.post(
   '/add-role',
-  [body('name').trim().notEmpty().isAlpha()],
+  [body('name').trim().notEmpty()],
   validationMiddleWare,
   isAuth,
   isAdmin,
@@ -45,7 +48,7 @@ router.post(
 router.post(
   '/add-user',
   [
-    body('name').trim().notEmpty().isAlpha(),
+    body('name').trim().notEmpty().isString(),
     body('email').isEmail().normalizeEmail().trim().notEmpty(),
     body('password').trim().isLength({ min: 5 }).notEmpty(),
   ],
@@ -58,7 +61,7 @@ router.post(
 router.post(
   '/add-dentist',
   [
-    body('name').trim().notEmpty().isAlpha(),
+    body('name').trim().notEmpty().isString(),
     body('email').isEmail().normalizeEmail().trim().notEmpty(),
     body('national_id').trim().notEmpty().isNumeric().isLength({ min: 14 }),
     body('phone').trim().notEmpty().isNumeric(),

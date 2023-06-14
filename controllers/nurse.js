@@ -6,7 +6,8 @@ const User = require('../models/user');
 const Role = require('../models/role');
 const Clinic = require('../models/clinic');
 const Appointment = require('../models/appointments');
-const { Op } = require('sequelize');
+const { Sequelize, Op } = require('sequelize');
+const moment = require('moment');
 
 // GET Logic
 /* Patients */
@@ -485,35 +486,183 @@ exports.getAppointment = async (req, res, next) => {
 
 exports.getAppointmentClinic = async (req, res, next) => {
   const id = req.params.id;
+  const TODAY_START = new Date().setHours(0, 0, 0, 0);
+  const NOW = new Date();
   try {
-    const clinic = await Clinic.findByPk(id, {
+    const appointment = await Appointment.findAll({
       where: {
-        status: 0,
+        [Op.and]: [
+          { clinicId: id },
+          // { status: 0 },
+          { createdAt: { [Op.gt]: TODAY_START, [Op.lt]: NOW } },
+        ],
       },
-      attributes: ['id', 'name'],
+      attributes: ['id', 'status', 'createdAt'],
       include: [
         {
           model: Patient,
           attributes: ['id', 'name'],
-          through: {
-            attributes: ['id', 'status', 'createdAt'],
-          },
         },
       ],
     });
-    if (!clinic) {
+    if (!appointment) {
       return res.status(404).json({
         message: 'error',
         status: 404,
       });
     }
+    // const clinic = await Clinic.findByPk(id, {
+    //   where: {
+    //     status: 0,
+    //   },
+    //   attributes: ['id', 'name'],
+    //   include: [
+    //     {
+    //       model: Patient,
+    //       attributes: ['id', 'name'],
+    //       through: {
+    //         attributes: ['id', 'status', 'createdAt'],
+    //         where: {
+    //           createdAt: {
+    //             [Op.gt]: TODAY_START,
+    //             [Op.lt]: NOW,
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ],
+    // });
+    // if (!clinic) {
+    //   return res.status(404).json({
+    //     message: 'error',
+    //     status: 404,
+    //   });
+    // }
     res.status(200).json({
       message: 'success',
-      data: clinic,
+      data: appointment,
       status: 200,
     });
   } catch (err) {
     throw new Error(err);
+  }
+};
+
+exports.getSummary = async (req, res, next) => {
+  // const TODAY_START = new Date().setHours(0, 0, 0, 0);
+  // const NOW = new Date();
+
+  try {
+    // overall
+    const clinicCounts = await Appointment.findAll({
+      attributes: [
+        'clinicId',
+        [Sequelize.fn('COUNT', Sequelize.col('patientId')), 'count'],
+        [Sequelize.col('clinic.name'), 'clinicName'],
+      ],
+      include: [
+        {
+          model: Clinic,
+          attributes: [],
+        },
+      ],
+      group: ['clinicId'],
+      raw: true,
+    });
+
+    // count patients that trasfered & pending & done to specialized clinic
+    const specializedCounts = await Appointment.findAll({
+      attributes: [
+        'clinicId',
+        [Sequelize.fn('COUNT', Sequelize.col('patientId')), 'count'],
+        [Sequelize.col('clinic.name'), 'clinicName'],
+      ],
+      include: [
+        {
+          model: Clinic,
+          attributes: [],
+        },
+      ],
+      where: {
+        status: {
+          [Op.or]: [0, 1, 2],
+        },
+      },
+      group: ['clinicId'],
+      raw: true,
+    });
+
+    // // count patients in every clinic each day
+    // const clinicCountsToday = await Appointment.findAll({
+    //   attributes: [
+    //     'clinicId',
+    //     [Sequelize.fn('COUNT', Sequelize.col('patientId')), 'count'],
+    //     [Sequelize.col('clinic.name'), 'clinicName'],
+    //   ],
+    //   include: [
+    //     {
+    //       model: Clinic,
+    //       attributes: [],
+    //     },
+    //   ],
+    //   where: {
+    //     createdAt: {
+    //       [Op.gt]: TODAY_START,
+    //       [Op.lt]: NOW,
+    //     },
+    //   },
+    //   group: ['clinicId'],
+    //   raw: true,
+    // });
+
+    // const clinicCountsWeek = await Appointment.findAll({
+    //   attributes: [
+    //     'clinicId',
+    //     [Sequelize.literal('WEEK(appointment.createdAt)'), 'week'],
+    //     [
+    //       Sequelize.fn('COUNT', Sequelize.col('appointment.patientId')),
+    //       'patientCount',
+    //     ],
+    //     [Sequelize.literal('clinic.name'), 'clinicName'],
+    //   ],
+    //   include: [
+    //     {
+    //       model: Clinic,
+    //       attributes: [],
+    //     },
+    //   ],
+    //   group: ['clinicId', 'week', 'clinic.name'],
+    //   order: [
+    //     ['clinicId', 'ASC'],
+    //     ['week', 'ASC'],
+    //   ],
+    // });
+
+    // const totalsPerWeek = {};
+
+    // clinicCountsWeek.forEach(entry => {
+    //   const { clinicId, week, patientCount, clinicName } = entry.dataValues;
+    //   if (!totalsPerWeek[clinicId]) {
+    //     totalsPerWeek[clinicName] = { [week]: patientCount };
+    //   } else {
+    //     totalsPerWeek[clinicName][week] = patientCount;
+    //   }
+    // });
+
+    // console.log(totalsPerWeek);
+
+    res.status(200).json({
+      message: 'success',
+      data: {
+        overall: clinicCounts,
+        specialized: specializedCounts,
+        // today: clinicCountsToday,
+        // week: totalsPerWeek,
+      },
+      status: 200,
+    });
+  } catch (error) {
+    throw new Error(error);
   }
 };
 
@@ -654,20 +803,38 @@ exports.addSpecialized = async (req, res, next) => {
 
 /* Appointment */
 exports.addAppointment = async (req, res, next) => {
-  const status = req.body.status;
-  const patientId = req.body.patientId;
+  // add validation to check the patient is in outpatients or not
+  const national_id = req.body.patientId;
   const clinicId = req.body.clinicId;
 
   try {
-    const appointment = await Appointment.create({
-      status: status,
-      patientId: patientId,
-      clinicId: clinicId,
+    const patient = await Patient.findOne({
+      where: {
+        national_id: national_id,
+      },
     });
-    res.status(201).json({
-      message: 'success',
-      status: 201,
+    console.log(patient.id);
+    const isHere = await Appointment.findOne({
+      where: {
+        patientId: patient.id,
+      },
     });
+    console.log(isHere);
+    if (isHere !== null) {
+      const appointment = await Appointment.create({
+        patientId: patient.id,
+        clinicId: clinicId,
+      });
+      return res.status(201).json({
+        message: 'success',
+        status: 201,
+      });
+    } else {
+      return res.status(404).json({
+        message: 'Patient must be in outpatients first',
+        status: 404,
+      });
+    }
   } catch (err) {
     throw new Error(err);
   }

@@ -11,10 +11,6 @@ const Role = sequelize.define('role', {
   name: {
     type: Sequelize.STRING,
     allowNull: false,
-    validate: {
-      notEmpty: true,
-      isAlpha: true,
-    },
   },
 });
 

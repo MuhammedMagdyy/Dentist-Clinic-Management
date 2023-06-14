@@ -11,11 +11,7 @@ const Clinic = sequelize.define('clinic', {
   name: {
     type: Sequelize.STRING,
     allowNull: false,
-    validate: {
-      notEmpty: true,
-      isAlpha: true,
-    },
-  },
+  }
 });
 
 module.exports = Clinic;

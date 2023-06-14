@@ -29,59 +29,173 @@ app.use(bodyParser.json());
 // Relations
 User.hasMany(Patient, {
   foreignKey: 'created_by',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
 });
 Patient.belongsTo(User, {
   foreignKey: 'created_by',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
 });
 
-Role.hasOne(User);
-User.belongsTo(Role);
+Role.hasOne(User, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+User.belongsTo(Role, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
 
-Patient.hasOne(Outpatient);
-Outpatient.belongsTo(Patient);
+Patient.hasOne(Outpatient, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+Outpatient.belongsTo(Patient, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
 
 User.hasMany(Outpatient, {
   foreignKey: 'created_by',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
 });
 Outpatient.belongsTo(User, {
   foreignKey: 'created_by',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
 });
 
-Dentist.hasMany(Outpatient);
-Outpatient.belongsTo(Dentist);
+Dentist.hasMany(Outpatient, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+Outpatient.belongsTo(Dentist, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
 
 Clinic.hasMany(Outpatient, {
   foreignKey: 'transferedId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
 });
 Outpatient.belongsTo(Clinic, {
   foreignKey: 'transferedId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
 });
 
-Dentist.hasMany(Specialized);
-Specialized.belongsTo(Dentist);
+Dentist.hasMany(Specialized, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+Specialized.belongsTo(Dentist, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
 
-Patient.hasMany(Specialized);
-Specialized.belongsTo(Patient);
+Patient.hasMany(Specialized, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+Specialized.belongsTo(Patient, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
 
-Clinic.hasMany(Specialized);
-Specialized.belongsTo(Clinic);
+Clinic.hasMany(Specialized, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+Specialized.belongsTo(Clinic, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
 
 User.hasMany(Specialized, {
   foreignKey: 'created_by',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
 });
 Specialized.belongsTo(User, {
   foreignKey: 'created_by',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
 });
 
-Patient.belongsToMany(Clinic, { through: Appointment });
-Clinic.belongsToMany(Patient, { through: Appointment });
+// Patient.belongsToMany(Clinic, {
+//   through: Appointment,
+//   onDelete: 'CASCADE',
+//   onUpdate: 'CASCADE',
+// });
+// Clinic.belongsToMany(Patient, {
+//   through: Appointment,
+//   onDelete: 'CASCADE',
+//   onUpdate: 'CASCADE',
+// });
+
+Clinic.hasMany(Appointment, {
+  foreignKey: {
+    name: 'clinicId',
+  },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+Appointment.belongsTo(Clinic, {
+  foreignKey: {
+    name: 'clinicId',
+  },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+Patient.hasMany(Appointment, {
+  foreignKey: {
+    name: 'patientId',
+  },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+Appointment.belongsTo(Patient, {
+  foreignKey: {
+    name: 'patientId',
+  },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
 
 Appointment.hasOne(Appointment, {
   foreignKey: {
     name: 'transferedTo',
     allowNull: true,
   },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
 });
+
+const initDB = async () => {
+  // check table is empty
+  const roleCount = await Role.count();
+  if (roleCount > 0) {
+    return;
+  }
+  const userCount = await User.count();
+  if (userCount > 0) {
+    return;
+  }
+  const role = await Role.create({
+    name: 'admin',
+  });
+  // password: admin@123 (must change)
+  const user = await User.create({
+    name: 'admin',
+    email: 'admin@admin.com',
+    password: '$2a$12$ntcNczGXs1oIsX.vrLyjbOP6E3TS9S6NYqyt9vW.NFrFBtKAiO2G.',
+    roleId: role.id,
+  });
+};
 
 // CORS Headers Middleware (Allowing all origins) - For Development Only (Remove in Production)
 app.use((req, res, next) => {
@@ -117,6 +231,7 @@ sequelize
   // .sync({ force: true })
   .sync()
   .then(result => {
+    initDB();
     console.log('Database connected');
   })
   .catch(err => {

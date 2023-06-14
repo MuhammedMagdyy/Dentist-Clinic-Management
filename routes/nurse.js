@@ -25,17 +25,19 @@ router.get(
   nurseController.getAppointmentClinic
 );
 
+router.get('/summary', isAuth, nurseController.getSummary);
+
 // POST
 router.post(
   '/add-patient',
   [
     body('name').trim().notEmpty(),
-    body('age').trim().notEmpty().isNumeric(),
-    body('phone').trim().notEmpty().isNumeric(),
+    body('age').trim().notEmpty(),
+    body('phone').trim().notEmpty(),
     body('gender').trim().notEmpty(),
     body('address').trim().notEmpty(),
     body('city').trim().notEmpty(),
-    body('national_id').trim().notEmpty().isNumeric().isLength({ min: 14 }),
+    body('national_id').trim().notEmpty(),
     body('nationality').trim().notEmpty(),
     body('marital_status').trim().notEmpty(),
     body('occupation').trim().notEmpty(),
@@ -53,13 +55,13 @@ router.post(
     body('diagnosis').trim().notEmpty(),
     body('extra_oral').trim().notEmpty(),
     body('intra_oral').trim().notEmpty(),
-    body('upper_right').trim().notEmpty().isNumeric(),
-    body('upper_left').trim().notEmpty().isNumeric(),
-    body('down_right').trim().notEmpty().isNumeric(),
-    body('down_left').trim().notEmpty().isNumeric(),
-    body('patientId').trim().notEmpty().isNumeric(),
-    body('dentistId').trim().notEmpty().isNumeric(),
-    body('transferedId').trim().notEmpty().isNumeric(),
+    body('upper_right').trim().notEmpty(),
+    body('upper_left').trim().notEmpty(),
+    body('down_right').trim().notEmpty(),
+    body('down_left').trim().notEmpty(),
+    body('patientId').trim().notEmpty(),
+    body('dentistId').trim().notEmpty(),
+    body('transferedId').trim().notEmpty(),
   ],
   validationMiddleWare,
   isAuth,
@@ -71,9 +73,9 @@ router.post(
   [
     body('examination').trim().notEmpty(),
     body('treatment').trim().notEmpty(),
-    body('patientId').trim().notEmpty().isNumeric(),
-    body('dentistId').trim().notEmpty().isNumeric(),
-    body('clinicId').trim().notEmpty().isNumeric(),
+    body('patientId').trim().notEmpty(),
+    body('dentistId').trim().notEmpty(),
+    body('clinicId').trim().notEmpty(),
     body('diagnosis').trim().notEmpty(),
     body('radiographic_exam').trim().notEmpty(),
     body('treatment_plant').trim().notEmpty(),

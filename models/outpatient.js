@@ -11,37 +11,22 @@ const Outpatient = sequelize.define('outpatient', {
   chief_complaint: {
     type: Sequelize.STRING,
     allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
   },
   medical_history: {
     type: Sequelize.STRING,
     allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
   },
   diagnosis: {
     type: Sequelize.STRING,
     allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
   },
   extra_oral: {
     type: Sequelize.STRING,
     allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
   },
   intra_oral: {
     type: Sequelize.STRING,
     allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
   },
   upper_right: {
     type: Sequelize.STRING,

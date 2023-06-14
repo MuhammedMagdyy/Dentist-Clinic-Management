@@ -17,12 +17,6 @@ exports.getAllClinics = async (req, res, next) => {
         exclude: ['createdAt', 'updatedAt'],
       },
     });
-    if (!clinics.length) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
-    }
     res.status(200).json({
       message: 'success',
       data: clinics,
@@ -60,12 +54,6 @@ exports.getClinic = async (req, res, next) => {
         },
       ],
     });
-    if (!clinic) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
-    }
     res.status(200).json({
       message: 'success',
       data: clinic,
@@ -84,12 +72,6 @@ exports.getAllRoles = async (req, res, next) => {
         exclude: ['createdAt', 'updatedAt'],
       },
     });
-    if (!roles.length) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
-    }
     res.status(200).json({
       message: 'success',
       data: roles,
@@ -108,12 +90,6 @@ exports.getRole = async (req, res, next) => {
         exclude: ['createdAt', 'updatedAt'],
       },
     });
-    if (!role) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
-    }
     res.status(200).json({
       message: 'success',
       data: role,
@@ -145,12 +121,6 @@ exports.getAllUsers = async (req, res, next) => {
         },
       ],
     });
-    if (!users.length) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
-    }
     res.status(200).json({
       message: 'success',
       data: users,
@@ -188,12 +158,6 @@ exports.getUser = async (req, res, next) => {
         },
       ],
     });
-    if (!user) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
-    }
     res.status(200).json({
       message: 'success',
       data: user,
@@ -212,12 +176,6 @@ exports.getAllDentists = async (req, res, next) => {
         exclude: ['createdAt', 'updatedAt'],
       },
     });
-    if (!dentists.length) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
-    }
     res.status(200).json({
       message: 'success',
       data: dentists,
@@ -283,12 +241,6 @@ exports.getDentist = async (req, res, next) => {
         },
       ],
     });
-    if (!dentist) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
-    }
     res.status(200).json({
       message: 'success',
       data: dentist,
@@ -308,12 +260,42 @@ exports.getDentistId = async (req, res, next) => {
       },
       attributes: ['id'],
     });
-    if (!dentist) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
-    }
+    res.status(200).json({
+      message: 'success',
+      data: dentist,
+      status: 200,
+    });
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+exports.getInDoctor = async (req, res, next) => {
+  try {
+    const dentist = await Dentist.findAll({
+      where: {
+        works_in: 'Specialized Clinics',
+      },
+      attributes: ['id', 'name'],
+    });
+    res.status(200).json({
+      message: 'success',
+      data: dentist,
+      status: 200,
+    });
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+exports.getOutDoctor = async (req, res, next) => {
+  try {
+    const dentist = await Dentist.findAll({
+      where: {
+        works_in: 'Outpatient Clinics',
+      },
+      attributes: ['id', 'name'],
+    });
     res.status(200).json({
       message: 'success',
       data: dentist,
@@ -333,12 +315,6 @@ exports.getClinicId = async (req, res, next) => {
       },
       attributes: ['id'],
     });
-    if (!clinic) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
-    }
     res.status(200).json({
       message: 'success',
       data: clinic,
@@ -467,7 +443,7 @@ exports.editRole = async (req, res, next) => {
   const name = req.body.name;
   try {
     const role = await Role.findByPk(roleId);
-    role.name = name;
+    role.name = name.toLowerCase();
     res.status(200).json({
       message: 'success',
       data: role,

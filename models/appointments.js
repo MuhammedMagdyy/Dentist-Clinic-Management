@@ -12,10 +12,6 @@ const Appointment = sequelize.define('appointment', {
     type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0,
-    validate: {
-      isIn: [[0, 1, 2]],
-      notEmpty: true,
-    },
   },
 });
 
