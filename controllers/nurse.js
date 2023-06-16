@@ -566,31 +566,31 @@ exports.getSummary = async (req, res, next) => {
           attributes: [],
         },
       ],
-      group: ['clinicId'],
+      group: ['clinicId', 'clinic.name'],
       raw: true,
     });
 
     // count patients that trasfered & pending & done to specialized clinic
-    const specializedCounts = await Appointment.findAll({
-      attributes: [
-        'clinicId',
-        [Sequelize.fn('COUNT', Sequelize.col('patientId')), 'count'],
-        [Sequelize.col('clinic.name'), 'clinicName'],
-      ],
-      include: [
-        {
-          model: Clinic,
-          attributes: [],
-        },
-      ],
-      where: {
-        status: {
-          [Op.or]: [0, 1, 2],
-        },
-      },
-      group: ['clinicId'],
-      raw: true,
-    });
+    // const specializedCounts = await Appointment.findAll({
+    //   attributes: [
+    //     'clinicId',
+    //     [Sequelize.fn('COUNT', Sequelize.col('patientId')), 'count'],
+    //     [Sequelize.col('clinic.name'), 'clinicName'],
+    //   ],
+    //   include: [
+    //     {
+    //       model: Clinic,
+    //       attributes: [],
+    //     },
+    //   ],
+    //   where: {
+    //     status: {
+    //       [Op.or]: [0, 1, 2],
+    //     },
+    //   },
+    //   group: ['clinicId'],
+    //   raw: true,
+    // });
 
     // // count patients in every clinic each day
     // const clinicCountsToday = await Appointment.findAll({
@@ -655,7 +655,7 @@ exports.getSummary = async (req, res, next) => {
       message: 'success',
       data: {
         overall: clinicCounts,
-        specialized: specializedCounts,
+        // specialized: specializedCounts,
         // today: clinicCountsToday,
         // week: totalsPerWeek,
       },
