@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const express = require('express');
 const sequelize = require('./util/database');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 
 /* Required Models */
@@ -24,7 +23,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.json());
 
 // Relations
 User.hasMany(Patient, {
