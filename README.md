@@ -46,6 +46,7 @@ A website that manages clinics in the Faculty of Dentistry at October 6 Univeris
 ![medical-history](https://github.com/MuhammedMagdyy/Dentist-Clinic-Management/assets/60513866/6f3a05a7-6222-485f-89f1-4793ed8806cc)
 
 **Booking an Appointment**
+
 ![add-appointment](https://github.com/MuhammedMagdyy/Dentist-Clinic-Management/assets/60513866/31cde13a-1201-4853-8348-842077be0eaa)
 
  
