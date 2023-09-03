@@ -5,6 +5,7 @@
 - [Introduction](#introduction)
 - [Technologies](#technologies)
 - [Features](#features)
+- [Screenshots](#screenshots)
 - [Setup](#setup)
 
 ## Introduction
@@ -27,12 +28,26 @@ A website that manages clinics in the Faculty of Dentistry at October 6 Univeris
 
 - Staff Management:
   - User accounts and roles for dentists, receptionists, and nurses.
+  - Sending emails for resetting passwords.
  
 - Medical Records:
   - Storage and retrieval of patient dental records.
  
 - Security:
   - Access control and user authentication to protect patient data.
+
+## Screenshots
+**Nurse Services**
+
+![nurse-services](https://github.com/MuhammedMagdyy/Dentist-Clinic-Management/assets/60513866/225eb641-2e0f-470b-a2f7-4ffe659fbe1a)
+
+**Medical History**
+
+![medical-history](https://github.com/MuhammedMagdyy/Dentist-Clinic-Management/assets/60513866/6f3a05a7-6222-485f-89f1-4793ed8806cc)
+
+**Booking an Appointment**
+![add-appointment](https://github.com/MuhammedMagdyy/Dentist-Clinic-Management/assets/60513866/31cde13a-1201-4853-8348-842077be0eaa)
+
  
 ## Setup
 To set up this repository locally, follow these steps:
