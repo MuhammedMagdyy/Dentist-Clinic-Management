@@ -123,17 +123,6 @@ Specialized.belongsTo(User, {
   onUpdate: 'CASCADE',
 });
 
-// Patient.belongsToMany(Clinic, {
-//   through: Appointment,
-//   onDelete: 'CASCADE',
-//   onUpdate: 'CASCADE',
-// });
-// Clinic.belongsToMany(Patient, {
-//   through: Appointment,
-//   onDelete: 'CASCADE',
-//   onUpdate: 'CASCADE',
-// });
-
 Clinic.hasMany(Appointment, {
   foreignKey: {
     name: 'clinicId',
