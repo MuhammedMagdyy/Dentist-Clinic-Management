@@ -20,6 +20,7 @@ const nurseRouter = require('./routes/nurse');
 const authRouter = require('./routes/auth');
 
 const app = express();
+const PORT = 8080;
 
 app.use(cors());
 app.use(express.json());
@@ -176,7 +177,7 @@ const initDB = async () => {
     name: 'admin',
   });
   // password: admin@123 (must change)
-  const user = await User.create({
+  await User.create({
     name: 'admin',
     email: 'admin@admin.com',
     password: '$2a$12$ntcNczGXs1oIsX.vrLyjbOP6E3TS9S6NYqyt9vW.NFrFBtKAiO2G.',
@@ -184,24 +185,12 @@ const initDB = async () => {
   });
 };
 
-// CORS Headers Middleware (Allowing all origins) - For Development Only (Remove in Production)
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'OPTIONS, GET, POST, PUT, PATCH, DELETE'
-  );
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
-
 app.use('/auth', authRouter);
 app.use('/admin', adminRouter);
 app.use(nurseRouter);
 
 // Error Handling Middleware
 app.use((error, req, res, next) => {
-  console.log(error);
   const status = error.statusCode || 500;
   const { message, data } = error;
   res.status(status).json({
@@ -210,8 +199,8 @@ app.use((error, req, res, next) => {
   });
 });
 
-app.listen(process.env.PORT || 8080, () => {
-  console.log('Server is running');
+app.listen(process.env.PORT || PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 sequelize
@@ -222,5 +211,5 @@ sequelize
     console.log('Database connected');
   })
   .catch(err => {
-    throw new Error(err);
+    throw new Error('Database connection failed');
   });
