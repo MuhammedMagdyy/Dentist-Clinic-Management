@@ -6,6 +6,7 @@
 - [Technologies](#technologies)
 - [Features](#features)
 - [Screenshots](#screenshots)
+- [Schema](#schema)
 - [Setup](#setup)
 
 ## Introduction
@@ -49,7 +50,9 @@ A website that manages clinics in the Faculty of Dentistry at October 6 Universi
 
 ![add-appointment](https://github.com/MuhammedMagdyy/Dentist-Clinic-Management/assets/60513866/31cde13a-1201-4853-8348-842077be0eaa)
 
- 
+## Schema
+![schema](https://github.com/MuhammedMagdyy/Dentist-Clinic-Management/assets/60513866/549f7270-dbd8-44e5-b0d4-2053df5eac28)
+
 ## Setup
 To set up this repository locally, follow these steps:
 
