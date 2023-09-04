@@ -9,7 +9,7 @@
 - [Setup](#setup)
 
 ## Introduction
-A website that manages clinics in the Faculty of Dentistry at October 6 Univeristy, optimizing reservations, patient transfers, and electronic diagnoses to replace paper records. It enhances care quality, reduces errors, facilitates communication among healthcare providers, and gathers health information for research and education. Ensuring access to patient diagnoses overcomes the limitations of paper records.
+A website that manages clinics in the Faculty of Dentistry at October 6 University, optimizing reservations, patient transfers, and electronic diagnoses to replace paper records. It enhances care quality, reduces errors, facilitates communication among healthcare providers, and gathers health information for research and education. Ensuring access to patient diagnoses overcomes the limitations of paper records.
 
 ## Technologies
 - JavaScript
@@ -63,4 +63,4 @@ cd Dentist-Clinic-Management
 ```
 3. Install [required packages](https://github.com/MuhammedMagdyy/Dentist-Clinic-Management/blob/main/package.json) using `npm install`
 4. Configure the [environment variables](https://github.com/MuhammedMagdyy/Dentist-Clinic-Management/blob/main/.env.example)
-5. use `npm start` to run development mode
+5. Use `npm start` to run development mode
