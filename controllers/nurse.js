@@ -7,66 +7,43 @@ const Role = require('../models/role');
 const Clinic = require('../models/clinic');
 const Appointment = require('../models/appointments');
 const { Sequelize, Op } = require('sequelize');
-const moment = require('moment');
 
 // GET Logic
 /* Patients */
-exports.getAllPatients = async (req, res, next) => {
+exports.getAllPatients = async (req, res) => {
   try {
     const patients = await Patient.findAll({
-      attributes: {
-        exclude: ['createdAt', 'updatedAt', 'created_by'],
-      },
+      attributes: { exclude: ['createdAt', 'updatedAt', 'created_by'] },
       include: [
         {
           model: User,
           attributes: ['name'],
-          include: [
-            {
-              model: Role,
-              attributes: ['name'],
-            },
-          ],
+          include: [{ model: Role, attributes: ['name'] }],
         },
       ],
     });
     if (!patients.length) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Not found' });
     }
-    res.status(200).json({
-      count: patients.length,
-      message: 'success',
-      data: patients,
-      status: 200,
-    });
+    res
+      .status(200)
+      .json({ message: 'success', count: patients.length, data: patients });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getPatient = async (req, res, next) => {
+exports.getPatient = async (req, res) => {
   const patientId = req.params.id;
   try {
     const patient = await Patient.findOne({
-      where: {
-        national_id: patientId,
-      },
-      attributes: {
-        exclude: ['createdAt', 'updatedAt', 'created_by'],
-      },
+      where: { national_id: patientId },
+      attributes: { exclude: ['createdAt', 'updatedAt', 'created_by'] },
       include: [
         {
           model: User,
           attributes: ['name'],
-          include: [
-            {
-              model: Role,
-              attributes: ['name'],
-            },
-          ],
+          include: [{ model: Role, attributes: ['name'] }],
         },
         {
           model: Outpatient,
@@ -80,12 +57,7 @@ exports.getPatient = async (req, res, next) => {
               'transferedId',
             ],
           },
-          include: [
-            {
-              model: Dentist,
-              attributes: ['name'],
-            },
-          ],
+          include: [{ model: Dentist, attributes: ['name'] }],
         },
         {
           model: Specialized,
@@ -100,61 +72,39 @@ exports.getPatient = async (req, res, next) => {
             ],
           },
           include: [
-            {
-              model: Dentist,
-              attributes: ['name'],
-            },
-            {
-              model: Clinic,
-              attributes: ['name'],
-            },
+            { model: Dentist, attributes: ['name'] },
+            { model: Clinic, attributes: ['name'] },
           ],
         },
       ],
     });
     if (!patient) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Not found' });
     }
-    res.status(200).json({
-      message: 'success',
-      data: patient,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: patient });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getPatientId = async (req, res, next) => {
+exports.getPatientId = async (req, res) => {
   const patientId = req.params.id;
   try {
     const patient = await Patient.findOne({
-      where: {
-        national_id: patientId,
-      },
+      where: { national_id: patientId },
       attributes: ['id'],
     });
     if (!patient) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Not found' });
     }
-    res.status(200).json({
-      message: 'success',
-      data: patient,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: patient });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Outpatients */
-exports.getAllOutPatients = async (req, res, next) => {
+exports.getAllOutPatients = async (req, res) => {
   try {
     const outpatients = await Outpatient.findAll({
       attributes: {
@@ -171,36 +121,21 @@ exports.getAllOutPatients = async (req, res, next) => {
         {
           model: User,
           attributes: ['name'],
-          include: [
-            {
-              model: Role,
-              attributes: ['name'],
-            },
-          ],
+          include: [{ model: Role, attributes: ['name'] }],
         },
-        {
-          model: Dentist,
-          attributes: ['name'],
-        },
+        { model: Dentist, attributes: ['name'] },
       ],
     });
     if (!outpatients.length) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Not found' });
     }
-    res.status(200).json({
-      message: 'success',
-      data: outpatients,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: outpatients });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getOutPatient = async (req, res, next) => {
+exports.getOutPatient = async (req, res) => {
   const outpatientId = req.params.id;
   try {
     const outpatient = await Outpatient.findByPk(outpatientId, {
@@ -217,48 +152,28 @@ exports.getOutPatient = async (req, res, next) => {
       include: [
         {
           model: Patient,
-          attributes: {
-            exclude: ['createdAt', 'updatedAt', 'created_by'],
-          },
+          attributes: { exclude: ['createdAt', 'updatedAt', 'created_by'] },
         },
-        {
-          model: Dentist,
-          attributes: ['name'],
-        },
-        {
-          model: Clinic,
-          attributes: ['name'],
-        },
+        { model: Dentist, attributes: ['name'] },
+        { model: Clinic, attributes: ['name'] },
         {
           model: User,
           attributes: ['name'],
-          include: [
-            {
-              model: Role,
-              attributes: ['name'],
-            },
-          ],
+          include: [{ model: Role, attributes: ['name'] }],
         },
       ],
     });
     if (!outpatient) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Not found' });
     }
-    res.status(200).json({
-      message: 'success',
-      data: outpatient,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: outpatient });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Specialized */
-exports.getAllSpecialized = async (req, res, next) => {
+exports.getAllSpecialized = async (req, res) => {
   try {
     const specialized = await Specialized.findAll({
       attributes: {
@@ -274,47 +189,27 @@ exports.getAllSpecialized = async (req, res, next) => {
       include: [
         {
           model: Patient,
-          attributes: {
-            exclude: ['createdAt', 'updatedAt', 'created_by'],
-          },
+          attributes: { exclude: ['createdAt', 'updatedAt', 'created_by'] },
         },
-        {
-          model: Dentist,
-          attributes: ['name'],
-        },
-        {
-          model: Clinic,
-          attributes: ['name'],
-        },
+        { model: Dentist, attributes: ['name'] },
+        { model: Clinic, attributes: ['name'] },
         {
           model: User,
           attributes: ['name'],
-          include: [
-            {
-              model: Role,
-              attributes: ['name'],
-            },
-          ],
+          include: [{ model: Role, attributes: ['name'] }],
         },
       ],
     });
     if (!specialized.length) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Not found' });
     }
-    res.status(200).json({
-      message: 'success',
-      data: specialized,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: specialized });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getSpecialized = async (req, res, next) => {
+exports.getSpecialized = async (req, res) => {
   const specializedId = req.params.id;
   try {
     const specialized = await Specialized.findByPk(specializedId, {
@@ -331,65 +226,38 @@ exports.getSpecialized = async (req, res, next) => {
       include: [
         {
           model: Patient,
-          attributes: {
-            exclude: ['createdAt', 'updatedAt', 'created_by'],
-          },
+          attributes: { exclude: ['createdAt', 'updatedAt', 'created_by'] },
         },
-        {
-          model: Dentist,
-          attributes: ['name'],
-        },
-        {
-          model: Clinic,
-          attributes: ['name'],
-        },
+        { model: Dentist, attributes: ['name'] },
+        { model: Clinic, attributes: ['name'] },
         {
           model: User,
           attributes: ['name'],
-          include: [
-            {
-              model: Role,
-              attributes: ['name'],
-            },
-          ],
+          include: [{ model: Role, attributes: ['name'] }],
         },
       ],
     });
     if (!specialized) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Not found' });
     }
-    res.status(200).json({
-      message: 'success',
-      data: specialized,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: specialized });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* All Data */
-exports.getAllPatientData = async (req, res, next) => {
+exports.getAllPatientData = async (req, res) => {
   const patientId = req.params.id;
   try {
     const patientData = await Patient.findOne({
       where: { national_id: patientId },
-      attributes: {
-        exclude: ['createdAt', 'updatedAt', 'created_by'],
-      },
+      attributes: { exclude: ['createdAt', 'updatedAt', 'created_by'] },
       include: [
         {
           model: User,
           attributes: ['name'],
-          include: [
-            {
-              model: Role,
-              attributes: ['name'],
-            },
-          ],
+          include: [{ model: Role, attributes: ['name'] }],
         },
         {
           model: Outpatient,
@@ -402,12 +270,7 @@ exports.getAllPatientData = async (req, res, next) => {
               'transferedId',
             ],
           },
-          include: [
-            {
-              model: Dentist,
-              attributes: ['name'],
-            },
-          ],
+          include: [{ model: Dentist, attributes: ['name'] }],
         },
         {
           model: Specialized,
@@ -421,38 +284,25 @@ exports.getAllPatientData = async (req, res, next) => {
             ],
           },
           include: [
-            {
-              model: Dentist,
-              attributes: ['name'],
-            },
-            {
-              model: Clinic,
-              attributes: ['name'],
-            },
+            { model: Dentist, attributes: ['name'] },
+            { model: Clinic, attributes: ['name'] },
           ],
         },
       ],
     });
     if (!patientData) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Not found' });
     }
-    res.status(200).json({
-      message: 'success',
-      data: {
-        patient: patientData,
-      },
-      status: 200,
-    });
+    res
+      .status(200)
+      .json({ message: 'success', data: { patient: patientData } });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Appointment */
-exports.getAppointment = async (req, res, next) => {
+exports.getAppointment = async (req, res) => {
   const id = req.params.id;
   try {
     const patient = await Patient.findOne({
@@ -462,29 +312,20 @@ exports.getAppointment = async (req, res, next) => {
         {
           model: Clinic,
           attributes: ['id', 'name'],
-          through: {
-            attributes: ['id', 'status'],
-          },
+          through: { attributes: ['id', 'status'] },
         },
       ],
     });
     if (!Patient) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Not found' });
     }
-    res.status(200).json({
-      message: 'success',
-      data: patient,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: patient });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getAppointmentClinic = async (req, res, next) => {
+exports.getAppointmentClinic = async (req, res) => {
   const id = req.params.id;
   const TODAY_START = new Date().setHours(0, 0, 0, 0);
   const NOW = new Date();
@@ -493,174 +334,36 @@ exports.getAppointmentClinic = async (req, res, next) => {
       where: {
         [Op.and]: [
           { clinicId: id },
-          // { status: 0 },
           { createdAt: { [Op.gt]: TODAY_START, [Op.lt]: NOW } },
         ],
       },
       attributes: ['id', 'status', 'createdAt'],
-      include: [
-        {
-          model: Patient,
-          attributes: ['id', 'name'],
-        },
-      ],
+      include: [{ model: Patient, attributes: ['id', 'name'] }],
     });
     if (!appointment) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Not found' });
     }
-    // const clinic = await Clinic.findByPk(id, {
-    //   where: {
-    //     status: 0,
-    //   },
-    //   attributes: ['id', 'name'],
-    //   include: [
-    //     {
-    //       model: Patient,
-    //       attributes: ['id', 'name'],
-    //       through: {
-    //         attributes: ['id', 'status', 'createdAt'],
-    //         where: {
-    //           createdAt: {
-    //             [Op.gt]: TODAY_START,
-    //             [Op.lt]: NOW,
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ],
-    // });
-    // if (!clinic) {
-    //   return res.status(404).json({
-    //     message: 'error',
-    //     status: 404,
-    //   });
-    // }
-    res.status(200).json({
-      message: 'success',
-      data: appointment,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: appointment });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getSummary = async (req, res, next) => {
-  // const TODAY_START = new Date().setHours(0, 0, 0, 0);
-  // const NOW = new Date();
-
+exports.getSummary = async (req, res) => {
   try {
-    // overall
     const clinicCounts = await Appointment.findAll({
       attributes: [
         'clinicId',
         [Sequelize.fn('COUNT', Sequelize.col('patientId')), 'count'],
         [Sequelize.col('clinic.name'), 'clinicName'],
       ],
-      include: [
-        {
-          model: Clinic,
-          attributes: [],
-        },
-      ],
+      include: [{ model: Clinic, attributes: [] }],
       group: ['clinicId', 'clinic.name'],
       raw: true,
     });
-
-    // count patients that trasfered & pending & done to specialized clinic
-    // const specializedCounts = await Appointment.findAll({
-    //   attributes: [
-    //     'clinicId',
-    //     [Sequelize.fn('COUNT', Sequelize.col('patientId')), 'count'],
-    //     [Sequelize.col('clinic.name'), 'clinicName'],
-    //   ],
-    //   include: [
-    //     {
-    //       model: Clinic,
-    //       attributes: [],
-    //     },
-    //   ],
-    //   where: {
-    //     status: {
-    //       [Op.or]: [0, 1, 2],
-    //     },
-    //   },
-    //   group: ['clinicId'],
-    //   raw: true,
-    // });
-
-    // // count patients in every clinic each day
-    // const clinicCountsToday = await Appointment.findAll({
-    //   attributes: [
-    //     'clinicId',
-    //     [Sequelize.fn('COUNT', Sequelize.col('patientId')), 'count'],
-    //     [Sequelize.col('clinic.name'), 'clinicName'],
-    //   ],
-    //   include: [
-    //     {
-    //       model: Clinic,
-    //       attributes: [],
-    //     },
-    //   ],
-    //   where: {
-    //     createdAt: {
-    //       [Op.gt]: TODAY_START,
-    //       [Op.lt]: NOW,
-    //     },
-    //   },
-    //   group: ['clinicId'],
-    //   raw: true,
-    // });
-
-    // const clinicCountsWeek = await Appointment.findAll({
-    //   attributes: [
-    //     'clinicId',
-    //     [Sequelize.literal('WEEK(appointment.createdAt)'), 'week'],
-    //     [
-    //       Sequelize.fn('COUNT', Sequelize.col('appointment.patientId')),
-    //       'patientCount',
-    //     ],
-    //     [Sequelize.literal('clinic.name'), 'clinicName'],
-    //   ],
-    //   include: [
-    //     {
-    //       model: Clinic,
-    //       attributes: [],
-    //     },
-    //   ],
-    //   group: ['clinicId', 'week', 'clinic.name'],
-    //   order: [
-    //     ['clinicId', 'ASC'],
-    //     ['week', 'ASC'],
-    //   ],
-    // });
-
-    // const totalsPerWeek = {};
-
-    // clinicCountsWeek.forEach(entry => {
-    //   const { clinicId, week, patientCount, clinicName } = entry.dataValues;
-    //   if (!totalsPerWeek[clinicId]) {
-    //     totalsPerWeek[clinicName] = { [week]: patientCount };
-    //   } else {
-    //     totalsPerWeek[clinicName][week] = patientCount;
-    //   }
-    // });
-
-    // console.log(totalsPerWeek);
-
-    res.status(200).json({
-      message: 'success',
-      data: {
-        overall: clinicCounts,
-        // specialized: specializedCounts,
-        // today: clinicCountsToday,
-        // week: totalsPerWeek,
-      },
-      status: 200,
-    });
+    res
+      .status(200)
+      .json({ message: 'success', data: { overall: clinicCounts } });
   } catch (error) {
     throw new Error(error);
   }
@@ -668,7 +371,7 @@ exports.getSummary = async (req, res, next) => {
 
 // POST Logic
 /* Patients */
-exports.addPatient = async (req, res, next) => {
+exports.addPatient = async (req, res) => {
   const name = req.body.name;
   const age = req.body.age;
   const phone = req.body.phone;
@@ -693,17 +396,14 @@ exports.addPatient = async (req, res, next) => {
       occupation: occupation,
       created_by: req.userId,
     });
-    res.status(201).json({
-      message: 'success',
-      status: 201,
-    });
+    res.status(201).json({ message: 'success', data: patient });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Outpatients */
-exports.addOutPatient = async (req, res, next) => {
+exports.addOutPatient = async (req, res) => {
   const chief_complaint = req.body.chief_complaint;
   const medical_history = req.body.medical_history;
   const diagnosis = req.body.diagnosis;
@@ -732,21 +432,15 @@ exports.addOutPatient = async (req, res, next) => {
       dentistId: dentistId,
       transferedId: transferedId,
     });
-    const appointment = await Appointment.create({
-      patientId: patientId,
-      clinicId: transferedId,
-    });
-    res.status(201).json({
-      message: 'success',
-      status: 201,
-    });
+    await Appointment.create({ patientId: patientId, clinicId: transferedId });
+    res.status(201).json({ message: 'success', data: outpatient });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Specialized */
-exports.addSpecialized = async (req, res, next) => {
+exports.addSpecialized = async (req, res) => {
   const examination = req.body.examination;
   const diagnosis = req.body.diagnosis;
   const treatment = req.body.treatment;
@@ -777,10 +471,7 @@ exports.addSpecialized = async (req, res, next) => {
       },
     });
     if (!appointment) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Not found' });
     }
     if (req.body.isTransfered === false) {
       appointment.status = 1;
@@ -792,48 +483,35 @@ exports.addSpecialized = async (req, res, next) => {
       appointment.status = 2;
     }
     await appointment.save();
-    res.status(201).json({
-      message: 'success',
-      status: 201,
-    });
+    res.status(201).json({ message: 'success', data: specialized });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Appointment */
-exports.addAppointment = async (req, res, next) => {
+exports.addAppointment = async (req, res) => {
   // add validation to check the patient is in outpatients or not
   const national_id = req.body.patientId;
   const clinicId = req.body.clinicId;
 
   try {
     const patient = await Patient.findOne({
-      where: {
-        national_id: national_id,
-      },
+      where: { national_id: national_id },
     });
-    console.log(patient.id);
     const isHere = await Appointment.findOne({
-      where: {
-        patientId: patient.id,
-      },
+      where: { patientId: patient.id },
     });
-    console.log(isHere);
     if (isHere !== null) {
       const appointment = await Appointment.create({
         patientId: patient.id,
         clinicId: clinicId,
       });
-      return res.status(201).json({
-        message: 'success',
-        status: 201,
-      });
+      return res.status(201).json({ message: 'success', data: appointment });
     } else {
-      return res.status(404).json({
-        message: 'Patient must be in outpatients first',
-        status: 404,
-      });
+      return res
+        .status(404)
+        .json({ message: 'Patient must be in outpatients first' });
     }
   } catch (err) {
     throw new Error(err);
@@ -842,7 +520,7 @@ exports.addAppointment = async (req, res, next) => {
 
 // PUT Logic
 /* Patients */
-exports.editPatient = async (req, res, next) => {
+exports.editPatient = async (req, res) => {
   const patientId = req.params.id;
   const name = req.body.name;
   const age = req.body.age;
@@ -858,10 +536,7 @@ exports.editPatient = async (req, res, next) => {
   try {
     const patient = await Patient.findByPk(patientId);
     if (!patient) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Patient not found' });
     }
     patient.name = name;
     patient.age = age;
@@ -875,17 +550,14 @@ exports.editPatient = async (req, res, next) => {
     patient.occupation = occupation;
     patient.created_by = created_by;
     await patient.save();
-    res.status(200).json({
-      message: 'success',
-      status: 200,
-    });
+    res.status(200).json({ message: 'Updated successfully' });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Outpatients */
-exports.editOutPatient = async (req, res, next) => {
+exports.editOutPatient = async (req, res) => {
   const outpatientId = req.params.id;
   const chief_complaint = req.body.chief_complaint;
   const medical_history = req.body.medical_history;
@@ -903,10 +575,7 @@ exports.editOutPatient = async (req, res, next) => {
   try {
     const outpatient = await Outpatient.findByPk(outpatientId);
     if (!outpatient) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Outpatient clinic not found' });
     }
     outpatient.chief_complaint = chief_complaint;
     outpatient.medical_history = medical_history;
@@ -922,17 +591,14 @@ exports.editOutPatient = async (req, res, next) => {
     outpatient.dentistId = dentistId;
     outpatient.transferedId = transferedId;
     await outpatient.save();
-    res.status(200).json({
-      message: 'success',
-      status: 200,
-    });
+    res.status(200).json({ message: 'Updated successfully' });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Specialized */
-exports.editSpecialized = async (req, res, next) => {
+exports.editSpecialized = async (req, res) => {
   const specializedId = req.params.id;
   const examination = req.body.examination;
   const diagnosis = req.body.diagnosis;
@@ -946,10 +612,7 @@ exports.editSpecialized = async (req, res, next) => {
   try {
     const specialized = await Specialized.findByPk(specializedId);
     if (!specialized) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Specialized clinic not found' });
     }
     specialized.examination = examination;
     specialized.diagnosis = diagnosis;
@@ -961,16 +624,13 @@ exports.editSpecialized = async (req, res, next) => {
     specialized.treatment_plant = treatment_plant;
     specialized.radiographic_exam = radiographic_exam;
     await specialized.save();
-    res.status(200).json({
-      message: 'success',
-      status: 200,
-    });
+    res.status(200).json({ message: 'Updated successfully' });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.editAppointment = async (req, res, next) => {
+exports.editAppointment = async (req, res) => {
   /*
     Status: [0: pending, 1: done, 2: transfered]
   */
@@ -980,10 +640,7 @@ exports.editAppointment = async (req, res, next) => {
   try {
     const old_appointment = await Appointment.findByPk(id);
     if (!old_appointment) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Patient has no appointments' });
     }
     const new_appointment = await Appointment.create({
       patientId: old_appointment.patientId,
@@ -994,31 +651,22 @@ exports.editAppointment = async (req, res, next) => {
     await old_appointment.save();
     await new_appointment.save();
 
-    res.status(200).json({
-      message: 'success',
-      status: 200,
-    });
+    res.status(200).json({ message: 'Updated successfully' });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.editStatus = async (req, res, next) => {
+exports.editStatus = async (req, res) => {
   const id = req.params.id;
   try {
     const appointment = await Appointment.findByPk(id);
     if (!appointment) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Appointment not found' });
     }
     appointment.status = 1;
     await appointment.save();
-    res.status(200).json({
-      message: 'success',
-      status: 200,
-    });
+    res.status(200).json({ message: 'Updated successfully' });
   } catch (err) {
     throw new Error(err);
   }
@@ -1026,63 +674,45 @@ exports.editStatus = async (req, res, next) => {
 
 // DELETE Logic
 /* Patients */
-exports.deletePatient = async (req, res, next) => {
+exports.deletePatient = async (req, res) => {
   const patientId = req.params.id;
   try {
     const patient = await Patient.findByPk(patientId);
     if (!patient) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Patient not found' });
     }
     await patient.destroy();
-    res.status(200).json({
-      message: 'success',
-      status: 200,
-    });
+    res.status(200).json({ message: 'Deleted successfully' });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Outpatients */
-exports.deleteOutPatient = async (req, res, next) => {
+exports.deleteOutPatient = async (req, res) => {
   const outpatientId = req.params.id;
   try {
     const outpatient = await Outpatient.findByPk(outpatientId);
     if (!outpatient) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Outpatient clinic not found' });
     }
     await outpatient.destroy();
-    res.status(200).json({
-      message: 'success',
-      status: 200,
-    });
+    res.status(200).json({ message: 'Deleted successfully' });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Specialized */
-exports.deleteSpecialized = async (req, res, next) => {
+exports.deleteSpecialized = async (req, res) => {
   const specializedId = req.params.id;
   try {
     const specialized = await Specialized.findByPk(specializedId);
     if (!specialized) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Specialized clinic not found' });
     }
     await specialized.destroy();
-    res.status(200).json({
-      message: 'success',
-      status: 200,
-    });
+    res.status(200).json({ message: 'Deleted successfully' });
   } catch (err) {
     throw new Error(err);
   }
