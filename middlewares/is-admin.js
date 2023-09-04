@@ -4,16 +4,11 @@ const Role = require('../models/role');
 module.exports = async (req, res, next) => {
   const user = await User.findByPk(req.userId);
   const admin = await Role.findOne({
-    where: {
-      name: 'admin',
-    },
+    where: { name: 'admin' },
   });
   if (user.roleId === admin.id) {
     next();
   } else {
-    return res.status(403).json({
-      message: 'error',
-      status: 403,
-    });
+    return res.status(403).json({ message: 'forbidden' });
   }
 };

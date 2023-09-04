@@ -8,6 +8,4 @@ function validationMiddleWare(req, res, next) {
   next();
 }
 
-module.exports = {
-  validationMiddleWare,
-};
+module.exports = { validationMiddleWare };
