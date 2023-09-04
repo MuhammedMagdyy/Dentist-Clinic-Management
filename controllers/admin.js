@@ -10,30 +10,22 @@ const Specialized = require('../models/specialized');
 
 // GET Logic
 /* Clinics */
-exports.getAllClinics = async (req, res, next) => {
+exports.getAllClinics = async (req, res) => {
   try {
     const clinics = await Clinic.findAll({
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
     });
-    res.status(200).json({
-      message: 'success',
-      data: clinics,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: clinics });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getClinic = async (req, res, next) => {
+exports.getClinic = async (req, res) => {
   const clinicId = req.params.id;
   try {
     const clinic = await Clinic.findByPk(clinicId, {
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
       include: [
         {
           model: Specialized,
@@ -46,62 +38,44 @@ exports.getClinic = async (req, res, next) => {
             },
             {
               model: Dentist,
-              attributes: {
-                exclude: ['createdAt', 'updatedAt'],
-              },
+              attributes: { exclude: ['createdAt', 'updatedAt'] },
             },
           ],
         },
       ],
     });
-    res.status(200).json({
-      message: 'success',
-      data: clinic,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: clinic });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Roles */
-exports.getAllRoles = async (req, res, next) => {
+exports.getAllRoles = async (req, res) => {
   try {
     const roles = await Role.findAll({
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
     });
-    res.status(200).json({
-      message: 'success',
-      data: roles,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: roles });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getRole = async (req, res, next) => {
+exports.getRole = async (req, res) => {
   const roleId = req.params.id;
   try {
     const role = await Role.findByPk(roleId, {
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
     });
-    res.status(200).json({
-      message: 'success',
-      data: role,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: role });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Users */
-exports.getAllUsers = async (req, res, next) => {
+exports.getAllUsers = async (req, res) => {
   try {
     const users = await Users.findAll({
       attributes: {
@@ -114,24 +88,15 @@ exports.getAllUsers = async (req, res, next) => {
           'updatedAt',
         ],
       },
-      include: [
-        {
-          model: Role,
-          attributes: ['id', 'name'],
-        },
-      ],
+      include: [{ model: Role, attributes: ['id', 'name'] }],
     });
-    res.status(200).json({
-      message: 'success',
-      data: users,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: users });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getUser = async (req, res, next) => {
+exports.getUser = async (req, res) => {
   const userId = req.params.id;
   try {
     const user = await Users.findByPk(userId, {
@@ -146,56 +111,37 @@ exports.getUser = async (req, res, next) => {
         ],
       },
       include: [
-        {
-          model: Role,
-          attributes: ['name'],
-        },
+        { model: Role, attributes: ['name'] },
         {
           model: Patient,
-          attributes: {
-            exclude: ['createdAt', 'updatedAt', 'created_by'],
-          },
+          attributes: { exclude: ['createdAt', 'updatedAt', 'created_by'] },
         },
       ],
     });
-    res.status(200).json({
-      message: 'success',
-      data: user,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: user });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Dentists */
-exports.getAllDentists = async (req, res, next) => {
+exports.getAllDentists = async (req, res) => {
   try {
     const dentists = await Dentist.findAll({
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
     });
-    res.status(200).json({
-      message: 'success',
-      data: dentists,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: dentists });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getDentist = async (req, res, next) => {
+exports.getDentist = async (req, res) => {
   const dentistId = req.params.id;
   try {
     const dentist = await Dentist.findOne({
-      where: {
-        national_id: dentistId,
-      },
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
+      where: { national_id: dentistId },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
       include: [
         {
           model: Outpatient,
@@ -241,85 +187,57 @@ exports.getDentist = async (req, res, next) => {
         },
       ],
     });
-    res.status(200).json({
-      message: 'success',
-      data: dentist,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: dentist });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getDentistId = async (req, res, next) => {
+exports.getDentistId = async (req, res) => {
   const dentistId = req.params.id;
   try {
     const dentist = await Dentist.findOne({
-      where: {
-        national_id: dentistId,
-      },
+      where: { national_id: dentistId },
       attributes: ['id'],
     });
-    res.status(200).json({
-      message: 'success',
-      data: dentist,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: dentist });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getInDoctor = async (req, res, next) => {
+exports.getInDoctor = async (req, res) => {
   try {
     const dentist = await Dentist.findAll({
-      where: {
-        works_in: 'Specialized Clinics',
-      },
+      where: { works_in: 'Specialized Clinics' },
       attributes: ['id', 'name'],
     });
-    res.status(200).json({
-      message: 'success',
-      data: dentist,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: dentist });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getOutDoctor = async (req, res, next) => {
+exports.getOutDoctor = async (req, res) => {
   try {
     const dentist = await Dentist.findAll({
-      where: {
-        works_in: 'Outpatient Clinics',
-      },
+      where: { works_in: 'Outpatient Clinics' },
       attributes: ['id', 'name'],
     });
-    res.status(200).json({
-      message: 'success',
-      data: dentist,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: dentist });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-exports.getClinicId = async (req, res, next) => {
+exports.getClinicId = async (req, res) => {
   const clinicId = req.params.id;
   try {
     const clinic = await Clinic.findOne({
-      where: {
-        id: clinicId,
-      },
+      where: { id: clinicId },
       attributes: ['id'],
     });
-    res.status(200).json({
-      message: 'success',
-      data: clinic,
-      status: 200,
-    });
+    res.status(200).json({ message: 'success', data: clinic });
   } catch (err) {
     throw new Error(err);
   }
@@ -327,52 +245,38 @@ exports.getClinicId = async (req, res, next) => {
 
 // POST Logic
 /* Clinics */
-exports.addClinic = async (req, res, next) => {
+exports.addClinic = async (req, res) => {
   if (!req.body.name) {
-    return res.status(400).json({
-      message: 'error',
-      status: 400,
-    });
+    return res.status(400).json({ message: 'Name is required' });
   }
   const name = req.body.name;
   try {
     const clinic = await Clinic.create({
       name: name,
     });
-    res.status(201).json({
-      message: 'success',
-      status: 201,
-    });
+    res.status(201).json({ message: 'Added Successfully', data: clinic });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Roles */
-exports.addRole = async (req, res, next) => {
+exports.addRole = async (req, res) => {
   if (!req.body.name) {
-    return res.status(400).json({
-      message: 'error',
-      status: 400,
-    });
+    return res.status(400).json({ message: 'Name is required' });
   }
   const name = req.body.name;
   const nameToLower = name.toLowerCase();
   try {
-    const result = await Role.create({
-      name: nameToLower,
-    });
-    res.status(201).json({
-      message: 'success',
-      status: 201,
-    });
+    const role = await Role.create({ name: nameToLower });
+    res.status(201).json({ message: 'Added Successfully', data: role });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Users */
-exports.addUser = async (req, res, next) => {
+exports.addUser = async (req, res) => {
   const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
@@ -385,17 +289,14 @@ exports.addUser = async (req, res, next) => {
       password: hashedPawwrod,
       roleId: roleId,
     });
-    res.status(201).json({
-      message: 'success',
-      status: 201,
-    });
+    res.status(201).json({ message: 'Added Successfully', data: user });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Dentists */
-exports.addDentist = async (req, res, next) => {
+exports.addDentist = async (req, res) => {
   const name = req.body.name;
   const email = req.body.email;
   const phone = req.body.phone;
@@ -409,10 +310,7 @@ exports.addDentist = async (req, res, next) => {
       national_id: national_id,
       works_in: works_in,
     });
-    res.status(201).json({
-      message: 'success',
-      status: 201,
-    });
+    res.status(201).json({ message: 'Added Successfully', data: dentist });
   } catch (err) {
     throw new Error(err);
   }
@@ -420,17 +318,16 @@ exports.addDentist = async (req, res, next) => {
 
 // PUT Logic
 /* Clinics */
-exports.editClinic = async (req, res, next) => {
+exports.editClinic = async (req, res) => {
   const clinicId = req.params.id;
   const name = req.body.name;
   try {
     const clinic = await Clinic.findByPk(clinicId);
+    if (!clinic) {
+      return res.status(404).json({ message: 'Clinic not found' });
+    }
     clinic.name = name;
-    res.status(200).json({
-      message: 'success',
-      data: clinic,
-      status: 200,
-    });
+    res.status(200).json({ message: 'Updated Successfully', data: clinic });
     await clinic.save();
   } catch (err) {
     throw new Error(err);
@@ -438,17 +335,16 @@ exports.editClinic = async (req, res, next) => {
 };
 
 /* Roles */
-exports.editRole = async (req, res, next) => {
+exports.editRole = async (req, res) => {
   const roleId = req.params.id;
   const name = req.body.name;
   try {
     const role = await Role.findByPk(roleId);
+    if (!role) {
+      return res.status(404).json({ message: 'Role not found' });
+    }
     role.name = name.toLowerCase();
-    res.status(200).json({
-      message: 'success',
-      data: role,
-      status: 200,
-    });
+    res.status(200).json({ message: 'Updated Successfully', data: role });
     await role.save();
   } catch (err) {
     throw new Error(err);
@@ -456,21 +352,20 @@ exports.editRole = async (req, res, next) => {
 };
 
 /* Users */
-exports.editUser = async (req, res, next) => {
+exports.editUser = async (req, res) => {
   const userId = req.params.id;
   const name = req.body.name;
   const email = req.body.email;
   const roleId = req.body.roleId;
   try {
     const user = await Users.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     user.name = name;
     user.email = email;
     user.roleId = roleId;
-    res.status(200).json({
-      message: 'success',
-      data: user,
-      status: 200,
-    });
+    res.status(200).json({ message: 'Updated Successfully', data: user });
     await user.save();
   } catch (err) {
     throw new Error(err);
@@ -478,7 +373,7 @@ exports.editUser = async (req, res, next) => {
 };
 
 /* Dentists */
-exports.editDentist = async (req, res, next) => {
+exports.editDentist = async (req, res) => {
   const dentistId = req.params.id;
   const name = req.body.name;
   const email = req.body.email;
@@ -487,16 +382,15 @@ exports.editDentist = async (req, res, next) => {
   const works_in = req.body.works_in;
   try {
     const dentist = await Dentist.findByPk(dentistId);
+    if (!dentist) {
+      return res.status(404).json({ message: 'Dentist not found' });
+    }
     dentist.name = name;
     dentist.email = email;
     dentist.phone = phone;
     dentist.national_id = national_id;
     dentist.works_in = works_in;
-    res.status(200).json({
-      message: 'success',
-      data: dentist,
-      status: 200,
-    });
+    res.status(200).json({ message: 'Updated Successfully', data: dentist });
     await dentist.save();
   } catch (err) {
     throw new Error(err);
@@ -505,84 +399,60 @@ exports.editDentist = async (req, res, next) => {
 
 // DELETE Logic
 /* Clinics */
-exports.deleteClinic = async (req, res, next) => {
+exports.deleteClinic = async (req, res) => {
   const clinicId = req.params.id;
   try {
     const clinic = await Clinic.findByPk(clinicId);
     if (!clinic) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Clinic not found' });
     }
     await clinic.destroy();
-    res.status(200).json({
-      message: 'success',
-      status: 200,
-    });
+    res.status(200).json({ message: 'Deleted Successfully' });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Roles */
-exports.deleteRole = async (req, res, next) => {
+exports.deleteRole = async (req, res) => {
   const roleId = req.params.id;
   try {
     const role = await Role.findByPk(roleId);
     if (!role) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Role not found' });
     }
     await role.destroy();
-    res.status(200).json({
-      message: 'success',
-      status: 200,
-    });
+    res.status(200).json({ message: 'Deleted Successfully' });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Users */
-exports.deleteUser = async (req, res, next) => {
+exports.deleteUser = async (req, res) => {
   const userId = req.params.id;
   try {
     const user = await Users.findByPk(userId);
     if (!user) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'User not found' });
     }
     await user.destroy();
-    res.status(200).json({
-      message: 'success',
-      status: 200,
-    });
+    res.status(200).json({ message: 'Deleted Successfully' });
   } catch (err) {
     throw new Error(err);
   }
 };
 
 /* Dentists */
-exports.deleteDentist = async (req, res, next) => {
+exports.deleteDentist = async (req, res) => {
   const dentistId = req.params.id;
   try {
     const dentist = await Dentist.findByPk(dentistId);
     if (!dentist) {
-      return res.status(404).json({
-        message: 'error',
-        status: 404,
-      });
+      return res.status(404).json({ message: 'Dentist not found' });
     }
     await dentist.destroy();
-    res.status(200).json({
-      message: 'success',
-      status: 200,
-    });
+    res.status(200).json({ message: 'Deleted Successfully' });
   } catch (err) {
     throw new Error(err);
   }
