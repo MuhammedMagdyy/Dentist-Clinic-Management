@@ -28,7 +28,7 @@ A website that manages clinics in the Faculty of Dentistry at October 6 Universi
   - Booking of appointments by nurses.
 
 - Staff Management:
-  - User accounts and roles for dentists, receptionists, and nurses.
+  - User accounts and roles for dentists, and nurses.
   - Sending emails for resetting passwords.
  
 - Medical Records:
