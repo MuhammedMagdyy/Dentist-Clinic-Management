@@ -1,7 +1,6 @@
 # Dentist Clinic Management - Graduation Project
 
 ## Table of Contents
-
 - [Introduction](#introduction)
 - [Technologies](#technologies)
 - [Features](#features)
