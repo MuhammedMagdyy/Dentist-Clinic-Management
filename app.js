@@ -125,40 +125,29 @@ Specialized.belongsTo(User, {
 });
 
 Clinic.hasMany(Appointment, {
-  foreignKey: {
-    name: 'clinicId',
-  },
+  foreignKey: { name: 'clinicId' },
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
 Appointment.belongsTo(Clinic, {
-  foreignKey: {
-    name: 'clinicId',
-  },
+  foreignKey: { name: 'clinicId' },
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
 
 Patient.hasMany(Appointment, {
-  foreignKey: {
-    name: 'patientId',
-  },
+  foreignKey: { name: 'patientId' },
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
 Appointment.belongsTo(Patient, {
-  foreignKey: {
-    name: 'patientId',
-  },
+  foreignKey: { name: 'patientId' },
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
 
 Appointment.hasOne(Appointment, {
-  foreignKey: {
-    name: 'transferedTo',
-    allowNull: true,
-  },
+  foreignKey: { name: 'transferedTo', allowNull: true },
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
@@ -173,9 +162,7 @@ const initDB = async () => {
   if (userCount > 0) {
     return;
   }
-  const role = await Role.create({
-    name: 'admin',
-  });
+  const role = await Role.create({ name: 'admin' });
   // password: admin@123 (must change)
   await User.create({
     name: 'admin',
@@ -193,10 +180,7 @@ app.use(nurseRouter);
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
   const { message, data } = error;
-  res.status(status).json({
-    message,
-    data,
-  });
+  res.status(status).json({ message, data });
 });
 
 app.listen(process.env.PORT || PORT, () => {
@@ -206,10 +190,10 @@ app.listen(process.env.PORT || PORT, () => {
 sequelize
   // .sync({ force: true })
   .sync()
-  .then(result => {
+  .then(() => {
     initDB();
-    console.log('Database connected');
+    console.log('Database connected successfully');
   })
-  .catch(err => {
+  .catch(() => {
     throw new Error('Database connection failed');
   });
