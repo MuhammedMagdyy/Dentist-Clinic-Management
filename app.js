@@ -155,11 +155,11 @@ Appointment.hasOne(Appointment, {
 const initDB = async () => {
   // check table is empty
   const roleCount = await Role.count();
-  if (roleCount > 0) {
+  if (roleCount) {
     return;
   }
   const userCount = await User.count();
-  if (userCount > 0) {
+  if (userCount) {
     return;
   }
   const role = await Role.create({ name: 'admin' });
