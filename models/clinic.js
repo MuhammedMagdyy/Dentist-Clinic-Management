@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('../util/database');
+const sequelize = require('../config/database');
 
 const Clinic = sequelize.define('clinic', {
   id: {
@@ -11,7 +11,7 @@ const Clinic = sequelize.define('clinic', {
   name: {
     type: Sequelize.STRING,
     allowNull: false,
-  }
+  },
 });
 
 module.exports = Clinic;
