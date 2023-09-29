@@ -1,21 +1,13 @@
 const express = require('express');
+
 const router = express.Router();
 const authController = require('../controllers/auth');
 const isAuth = require('../middlewares/is-auth');
-const { body } = require('express-validator');
-const { validationMiddleWare } = require('../middlewares/is-validator');
+const { loginValidator } = require('../utils/validators/auth/loginValidator');
 
 router.post('/reset/:token', authController.resetPassword);
 
-router.post(
-  '/login',
-  [
-    body('email').isEmail().normalizeEmail().trim().notEmpty(),
-    body('password').trim().isLength({ min: 5 }).notEmpty(),
-  ],
-  validationMiddleWare,
-  authController.login
-);
+router.post('/login', loginValidator, authController.login);
 
 router.post('/reset', authController.forgetPassword);
 
