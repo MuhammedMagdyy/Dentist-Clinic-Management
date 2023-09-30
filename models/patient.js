@@ -19,6 +19,7 @@ const Patient = sequelize.define('patient', {
   phone: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true,
   },
   gender: {
     type: Sequelize.STRING,
@@ -35,6 +36,7 @@ const Patient = sequelize.define('patient', {
   nationalId: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true,
   },
   nationality: {
     type: Sequelize.STRING,

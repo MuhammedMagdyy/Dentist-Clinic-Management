@@ -11,6 +11,7 @@ const Clinic = sequelize.define('clinic', {
   name: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true,
   },
 });
 

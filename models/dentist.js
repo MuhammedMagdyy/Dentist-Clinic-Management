@@ -15,14 +15,18 @@ const Dentist = sequelize.define('dentist', {
   email: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true,
+    validate: { isEmail: true },
   },
   phone: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true,
   },
   nationalId: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true,
   },
   worksIn: {
     type: Sequelize.STRING,
