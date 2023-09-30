@@ -55,8 +55,7 @@ exports.updateDentistValidator = [
     .normalizeEmail()
     .withMessage('Please enter a valid email.')
     .optional()
-    .trim()
-    .normalizeEmail(),
+    .trim(),
   check('phone')
     .isLength({ min: 11 })
     .withMessage('Phone number must be at least 11 characters long.')
