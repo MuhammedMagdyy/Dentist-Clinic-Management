@@ -27,12 +27,12 @@ app.use(express.json());
 
 // Relations
 User.hasMany(Patient, {
-  foreignKey: 'created_by',
+  foreignKey: 'createdBy',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
 Patient.belongsTo(User, {
-  foreignKey: 'created_by',
+  foreignKey: 'createdBy',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
@@ -56,12 +56,12 @@ Outpatient.belongsTo(Patient, {
 });
 
 User.hasMany(Outpatient, {
-  foreignKey: 'created_by',
+  foreignKey: 'createdBy',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
 Outpatient.belongsTo(User, {
-  foreignKey: 'created_by',
+  foreignKey: 'createdBy',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
@@ -114,12 +114,12 @@ Specialized.belongsTo(Clinic, {
 });
 
 User.hasMany(Specialized, {
-  foreignKey: 'created_by',
+  foreignKey: 'createdBy',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
 Specialized.belongsTo(User, {
-  foreignKey: 'created_by',
+  foreignKey: 'createdBy',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
