@@ -1,22 +1,19 @@
-const Role = require('../models/role');
-
 const bcrypt = require('bcryptjs');
-const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
-const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const sendGridTransport = require('nodemailer-sendgrid-transport');
-const { Op } = require('sequelize');
+const User = require('../models/user');
+const Role = require('../models/role');
 const resetPasswordPage = require('../views/html-reset-password');
+const { generateCode } = require('../helpers/generateCode');
 
 const transporter = nodemailer.createTransport(
   sendGridTransport({ auth: { api_key: process.env.SENDGRID_API_KEY } })
 );
 
 exports.login = async (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const { email, password } = req.body;
   try {
     const user = await User.findOne({
       where: { email: email },
@@ -51,78 +48,58 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.forgetPassword = (req, res) => {
-  crypto.randomBytes(32, (err, buffer) => {
-    if (err) {
-      return res.status(404).json({ message: 'Not found' });
+exports.forgetPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ where: { email: email } });
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
-    const token = buffer.toString('hex');
-    User.findOne({ where: { email: req.body.email } })
-      .then(user => {
-        if (!user) {
-          return res.status(403).json({ message: 'Forbidden' });
-        }
-        user.resetToken = token;
-        user.resetTokenExpiration = Date.now() + 3600000;
-        return user.save();
-      })
-      .then(() => {
-        res.status(200).json({ message: 'success', token: token });
-        transporter.sendMail({
-          to: req.body.email,
-          from: process.env.SENDGRID_EMAIL,
-          subject: 'Reset Password',
-          html: resetPasswordPage.getEmail(),
-        });
-      })
-      .catch(err => {
-        throw new Error(err);
-      });
-  });
+    const code = generateCode();
+    user.verificationCode = code;
+    user.save();
+    transporter.sendMail({
+      to: email,
+      from: process.env.SENDGRID_EMAIL,
+      subject: 'Reset Password',
+      html: resetPasswordPage.getEmail(code),
+    });
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
-exports.resetPassword = (req, res) => {
-  const token = req.params.token;
-  const password = req.body.password;
-  User.findOne({
-    where: { resetToken: token, resetTokenExpiration: { [Op.gt]: Date.now() } },
-  })
-    .then(async user => {
-      if (!user) {
-        return res.status(403).json({ message: 'Forbidden' });
-      }
-      let hashedPassword = await bcrypt.hash(password, 12);
-      user.password = hashedPassword;
-      user.resetToken = null;
-      user.resetTokenExpiration = null;
-      user.save();
-      return res.status(200).json({ message: 'Password changed successfully' });
-    })
-    .catch(err => {
-      throw new Error(err);
+exports.verifyCode = async (req, res) => {
+  const { email, verificationCode } = req.body;
+  try {
+    const user = await User.findOne({
+      where: { email: email, verificationCode: verificationCode },
     });
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    res.status(200).json({
+      message: 'Code verified successfully, please reset your password',
+    });
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
-exports.changePassword = (req, res) => {
-  const currentPassword = req.body.currentPassword;
-  const newPassword = req.body.password;
-  const userId = req.userId;
-  User.findOne({
-    where: { id: userId },
-  })
-    .then(async user => {
-      const isEqual = await bcrypt.compare(currentPassword, user.password);
-      if (!isEqual) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
-      let hashedPassword = await bcrypt.hash(newPassword, 12);
-      user.password = hashedPassword;
-      user.resetToken = null;
-      user.resetTokenExpiration = null;
-      user.save();
-      return res.status(200).json({ message: 'Password changed successfully' });
-    })
-    .catch(err => {
-      throw new Error(err);
-    });
+exports.resetPassword = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ where: { email: email } });
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    const hashedPassword = await bcrypt.hash(password, 12);
+    user.password = hashedPassword;
+    user.verificationCode = null;
+    user.save();
+    res.status(200).json({ message: 'Password reset successfully' });
+  } catch (err) {
+    throw new Error(err);
+  }
 };
