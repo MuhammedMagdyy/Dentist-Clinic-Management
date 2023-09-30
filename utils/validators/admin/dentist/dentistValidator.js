@@ -32,7 +32,7 @@ exports.addDentistValidator = [
     .matches(/^01[0-2,5]{1}[0-9]{8}$/)
     .withMessage('Please enter a valid phone number.')
     .trim(),
-  check('national_id')
+  check('nationalId')
     .notEmpty()
     .withMessage('National ID must not be empty.')
     .isLength({ min: 14 })
@@ -66,7 +66,7 @@ exports.updateDentistValidator = [
     .withMessage('Please enter a valid phone number.')
     .optional()
     .trim(),
-  check('national_id')
+  check('nationalId')
     .isLength({ min: 14 })
     .withMessage('National ID must be at least 14 characters long.')
     .isLength({ max: 14 })
