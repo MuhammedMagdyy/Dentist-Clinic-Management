@@ -8,11 +8,11 @@ const Outpatient = sequelize.define('outpatient', {
     allowNull: false,
     primaryKey: true,
   },
-  chief_complaint: {
+  chiefComplaint: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  medical_history: {
+  medicalHistory: {
     type: Sequelize.STRING,
     allowNull: false,
   },
@@ -20,24 +20,24 @@ const Outpatient = sequelize.define('outpatient', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  extra_oral: {
+  extraOral: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  intra_oral: {
+  intraOral: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  upper_right: {
+  upperRight: {
     type: Sequelize.STRING,
   },
-  upper_left: {
+  upperLeft: {
     type: Sequelize.STRING,
   },
-  down_right: {
+  downRight: {
     type: Sequelize.STRING,
   },
-  down_left: {
+  downLeft: {
     type: Sequelize.STRING,
   },
 });

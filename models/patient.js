@@ -32,7 +32,7 @@ const Patient = sequelize.define('patient', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  national_id: {
+  nationalId: {
     type: Sequelize.STRING,
     allowNull: false,
   },
@@ -40,7 +40,7 @@ const Patient = sequelize.define('patient', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  marital_status: {
+  maritalStatus: {
     type: Sequelize.STRING,
     allowNull: false,
   },

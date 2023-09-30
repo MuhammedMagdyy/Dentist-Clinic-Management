@@ -20,11 +20,11 @@ const Dentist = sequelize.define('dentist', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  national_id: {
+  nationalId: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  works_in: {
+  worksIn: {
     type: Sequelize.STRING,
     allowNull: false,
   },

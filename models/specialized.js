@@ -16,7 +16,7 @@ const Specialized = sequelize.define('specialized', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  radiographic_exam: {
+  radiographicExam: {
     type: Sequelize.STRING,
     allowNull: false,
   },
@@ -24,7 +24,7 @@ const Specialized = sequelize.define('specialized', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  treatment_plant: {
+  treatmentPlan: {
     type: Sequelize.STRING,
     allowNull: false,
   },
