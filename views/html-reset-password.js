@@ -1,5 +1,4 @@
-exports.getEmail = () => {
-  return `
+exports.getEmail = (code) => `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   <html
     xmlns="http://www.w3.org/1999/xhtml"
@@ -459,7 +458,7 @@ exports.getEmail = () => {
                                           color: #ffffff;
                                           font-family: Lato, sans-serif;
                                         "
-                                        >Password reset
+                                        >Password Reset Code
                                       </span>
                                     </p>
                                   </div>
@@ -581,8 +580,7 @@ exports.getEmail = () => {
                                           line-height: 25.2px;
                                           color: #666666;
                                         "
-                                        >To reset your password, please follow the
-                                        link below:
+                                        >Here is your password reset code:
                                       </span>
                                     </p>
                                   </div>
@@ -611,7 +609,7 @@ exports.getEmail = () => {
                                 >
                                   <div align="left">
                                     <a
-                                      href="http://127.0.0.1:5500/Auth/confirm-password.html"
+                                      href="#"
                                       target="_blank"
                                       class="v-button"
                                       style="
@@ -645,7 +643,7 @@ exports.getEmail = () => {
                                             font-size: 18px;
                                             line-height: 21.6px;
                                           "
-                                          >Reset Password</span
+                                          >${code}</span
                                         ></span
                                       >
                                     </a>
@@ -844,4 +842,3 @@ exports.getEmail = () => {
     </body>
   </html>          
   `;
-};
