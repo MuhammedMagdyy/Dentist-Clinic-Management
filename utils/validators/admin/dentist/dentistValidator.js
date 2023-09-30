@@ -40,6 +40,7 @@ exports.addDentistValidator = [
     .isLength({ max: 14 })
     .withMessage('National ID must be at most 14 characters long.')
     .trim(),
+  check('worksIn').notEmpty().withMessage('Works in must not be empty.').trim(),
   validationMiddleWare,
 ];
 
@@ -70,6 +71,11 @@ exports.updateDentistValidator = [
     .withMessage('National ID must be at least 14 characters long.')
     .isLength({ max: 14 })
     .withMessage('National ID must be at most 14 characters long.')
+    .optional()
+    .trim(),
+  check('worksIn')
+    .notEmpty()
+    .withMessage('Works in must not be empty.')
     .optional()
     .trim(),
   validationMiddleWare,
