@@ -31,7 +31,6 @@
     "mysql2": "^3.6.1",
     "nodemailer": "^6.9.5",
     "nodemailer-sendgrid-transport": "^0.2.0",
-    "sequelize": "^6.33.0",
-    "uuid": "^9.0.1"
+    "sequelize": "^6.33.0"
   }
 }
