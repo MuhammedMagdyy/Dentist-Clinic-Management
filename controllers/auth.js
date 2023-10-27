@@ -16,7 +16,7 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({
-      where: { email: email },
+      where: { email },
       include: [{ model: Role, attributes: ['name'] }],
     });
     if (!user) {
@@ -51,13 +51,13 @@ exports.login = async (req, res) => {
 exports.forgetPassword = async (req, res) => {
   const { email } = req.body;
   try {
-    const user = await User.findOne({ where: { email: email } });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
     const code = generateCode();
     user.verificationCode = code;
-    user.save();
+    await user.save();
     transporter.sendMail({
       to: email,
       from: process.env.SENDGRID_EMAIL,
@@ -73,9 +73,7 @@ exports.forgetPassword = async (req, res) => {
 exports.verifyCode = async (req, res) => {
   const { email, verificationCode } = req.body;
   try {
-    const user = await User.findOne({
-      where: { email: email, verificationCode: verificationCode },
-    });
+    const user = await User.findOne({ where: { email, verificationCode } });
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
@@ -90,14 +88,14 @@ exports.verifyCode = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ where: { email: email } });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
     const hashedPassword = await bcrypt.hash(password, 12);
     user.password = hashedPassword;
     user.verificationCode = null;
-    user.save();
+    await user.save();
     res.status(200).json({ message: 'Password reset successfully' });
   } catch (err) {
     throw new Error(err);
